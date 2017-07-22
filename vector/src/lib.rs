@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub struct Vector2 {
     x: f32,
     y: f32,
@@ -44,6 +44,13 @@ impl ops::Add for Vector2 {
     }
 }
 
+impl ops::Mul<f32> for Vector2 {
+    type Output = Vector2;
+
+    fn mul(self, value: f32) -> Vector2 {
+        Vector2 {x: self.x * value, y: self.y * value}
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -75,5 +82,12 @@ mod tests {
         let actual = Vector2::RIGHT() + Vector2::UP();
         assert_eq!(actual.x, 1f32);
         assert_eq!(actual.y, 1f32);
+    }
+
+    #[test]
+    fn mult_one_by_3() {
+        let actual = Vector2::ONE() * 3f32;
+        assert_eq!(actual.x, 3f32);
+        assert_eq!(actual.y, 3f32);
     }
 }
