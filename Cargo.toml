@@ -1,5 +1,5 @@
 [package]
-name = "vector"
+name = "mathf"
 version = "0.1.0"
 authors = ["Julia Naomi <jnaomi@thoughtworks.com>"]
 
