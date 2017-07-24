@@ -7,10 +7,23 @@ pub struct Vector2 {
     y: f32,
 }
 
+///A 2D Vector with x and y coordinates: Vector2
+#[derive(PartialEq, Debug)]
+pub struct Point2 {
+    x: f32,
+    y: f32,
+}
+
 impl Vector2 {
     ///Instantiates a new vector with to be defined values of x and y;
     pub fn new(x: f32, y: f32) -> Vector2 {
         Vector2 {x: x, y: y}
+    }
+
+    ///Instantiates a new Vector2 from 2 Point2 (initial position, final position).
+    ///The new fector is created as final - initial (Points)
+    pub fn diff(initialPoint: Point2, finalPoint: Point2) -> Vector2 {
+        Vector2 {x: finalPoint.x - initialPoint.x, y: finalPoint.y - initialPoint.y}
     }
 
     ///Defines a Vector with UP direction (y=1, x=0)
@@ -43,6 +56,7 @@ impl Vector2 {
         Vector2 {x: 0f32, y: 0f32}
     }
 
+    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
     pub fn magnitude(self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
     }
@@ -85,6 +99,12 @@ impl ops::Sub for Vector2 {
     }
 }
 
+impl Point2 {
+    pub fn new(x: f32, y: f32) -> Point2 {
+        Point2 {x: x, y: y}
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -98,7 +118,7 @@ mod tests {
     }
 
     #[test]
-    fn creates_vector2UP() {
+    fn creates_vector2_up() {
         let actual = Vector2::UP();
         assert!(actual.x == 0f32 &&
             actual.y == 1f32);
@@ -150,5 +170,20 @@ mod tests {
         let actual = vec1 * vec2;
         let expected = 4f32;
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn constructs_vector2_from_points2() {
+        let vec = Vector2::diff(Point2 {x: 1f32, y: -1f32}, Point2 {x: 2f32, y: 3f32});
+        assert_eq!(vec.x, 1f32);
+        assert_eq!(vec.y, 4f32);
+    }
+
+    #[test]
+    fn creates_point2_with_parameters() {
+        let actual = Point2::new(1f32, 1f32);
+        let expected = Point2 {x: 1f32, y: 1f32};
+        assert!(expected.x == actual.x &&
+            expected.y == actual.y);
     }
 }
