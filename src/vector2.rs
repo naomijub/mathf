@@ -68,11 +68,11 @@ impl ops::Mul<f32> for Vector2 {
 }
 
 impl ops::Mul<Vector2> for Vector2 {
-    type Output = Vector2;
+    type Output = f32;
 
-    ///Implements the dot product of 2 Vector2 as '*'. 
-    fn mul(self, new_vec: Vector2) -> Vector2 {
-        Vector2 {x: self.x * new_vec.x, y: self.y * new_vec.y}
+    ///Implements the dot product of 2 Vector2 as '*'.
+    fn mul(self, new_vec: Vector2) -> f32 {
+        self.x * new_vec.x + self.y * new_vec.y
     }
 }
 
@@ -148,7 +148,7 @@ mod tests {
         let vec1 = Vector2 {x: 2f32, y: 1f32};
         let vec2 = Vector2 {x: 1f32, y: 2f32};
         let actual = vec1 * vec2;
-        let expected = 2f32 * f32::sqrt(2f32);
-        assert_eq!(actual.magnitude(), expected);
+        let expected = 4f32;
+        assert_eq!(actual, expected);
     }
 }
