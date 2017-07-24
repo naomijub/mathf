@@ -103,6 +103,14 @@ impl Point2 {
     pub fn new(x: f32, y: f32) -> Point2 {
         Point2 {x: x, y: y}
     }
+
+    pub fn to_vec(self) -> Vector2 {
+        Vector2::diff(Point2::ZERO(), self)
+    }
+
+    fn ZERO() -> Point2 {
+        Point2::new(0f32, 0f32)
+    }
 }
 
 #[cfg(test)]
@@ -183,6 +191,15 @@ mod tests {
     fn creates_point2_with_parameters() {
         let actual = Point2::new(1f32, 1f32);
         let expected = Point2 {x: 1f32, y: 1f32};
+        assert!(expected.x == actual.x &&
+            expected.y == actual.y);
+    }
+
+    #[test]
+    fn creates_vector_from_point2() {
+        let point = Point2::new(1f32, 1f32);
+        let actual = point.to_vec();
+        let expected = Vector2::ONE();
         assert!(expected.x == actual.x &&
             expected.y == actual.y);
     }
