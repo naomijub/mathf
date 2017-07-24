@@ -67,6 +67,16 @@ impl ops::Mul<f32> for Vector2 {
     }
 }
 
+impl ops::Mul<Vector2> for Vector2 {
+    type Output = Vector2;
+
+    ///Implements The scalar multiplication of a Vector2 with a f32. Other numbers should
+    ///be passed with 'i as f32'
+    fn mul(self, new_vec: Vector2) -> Vector2 {
+        Vector2 {x: self.x * new_vec.x, y: self.y * new_vec.y}
+    }
+}
+
 impl ops::Sub for Vector2 {
     type Output = Vector2;
 
@@ -126,5 +136,20 @@ mod tests {
     fn magnitude_of_vector() {
         let vec = Vector2 {x: 3f32, y: 4f32};
         assert_eq!(vec.magnitude(), 5f32);
+    }
+
+    #[test]
+    fn magnitude_of_vector_is_positive() {
+        let vec = Vector2 {x: -3f32, y: 4f32};
+        assert!(vec.magnitude() >= 0f32);
+    }
+
+    #[test]
+    fn dot_product() {
+        let vec1 = Vector2 {x: 2f32, y: 1f32};
+        let vec2 = Vector2 {x: 1f32, y: 2f32};
+        let actual = vec1 * vec2;
+        let expected = 2f32 * f32::sqrt(2f32);
+        assert_eq!(actual.magnitude(), expected);
     }
 }
