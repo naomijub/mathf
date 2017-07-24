@@ -60,7 +60,7 @@ impl ops::Add for Vector2 {
 impl ops::Mul<f32> for Vector2 {
     type Output = Vector2;
 
-    ///Implements The scalar multiplication of a Vector2 with a f32. Other numbers should
+    ///Implements the scalar multiplication of a Vector2 with a f32. Other numbers should
     ///be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector2 {
         Vector2 {x: self.x * value, y: self.y * value}
@@ -70,8 +70,7 @@ impl ops::Mul<f32> for Vector2 {
 impl ops::Mul<Vector2> for Vector2 {
     type Output = Vector2;
 
-    ///Implements The scalar multiplication of a Vector2 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    ///Implements the dot product of 2 Vector2 as '*'. 
     fn mul(self, new_vec: Vector2) -> Vector2 {
         Vector2 {x: self.x * new_vec.x, y: self.y * new_vec.y}
     }
@@ -80,7 +79,7 @@ impl ops::Mul<Vector2> for Vector2 {
 impl ops::Sub for Vector2 {
     type Output = Vector2;
 
-    ///Implements the Vector2 '+' trait
+    ///Implements the Vector2 '-' trait
     fn sub(self, new_vec: Vector2) -> Vector2 {
         Vector2 {x: self.x - new_vec.x, y: self.y - new_vec.y}
     }
