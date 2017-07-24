@@ -63,6 +63,15 @@ impl ops::Mul<f32> for Vector2 {
     }
 }
 
+impl ops::Sub for Vector2 {
+    type Output = Vector2;
+
+    ///Implements the Vector2 '+' trait
+    fn sub(self, new_vec: Vector2) -> Vector2 {
+        Vector2 {x: self.x - new_vec.x, y: self.y - new_vec.y}
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -100,5 +109,12 @@ mod tests {
         let actual = Vector2::ONE() * 3f32;
         assert_eq!(actual.x, 3f32);
         assert_eq!(actual.y, 3f32);
+    }
+
+    #[test]
+    fn sub_right_from_one() {
+        let actual = Vector2::ONE() - Vector2::RIGHT();
+        assert_eq!(actual.x, 0f32);
+        assert_eq!(actual.y, 1f32);
     }
 }
