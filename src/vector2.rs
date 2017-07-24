@@ -100,16 +100,28 @@ impl ops::Sub for Vector2 {
 }
 
 impl Point2 {
+    ///Instantiates a new Point2D with x and y.
     pub fn new(x: f32, y: f32) -> Point2 {
         Point2 {x: x, y: y}
     }
 
+    ///Creates a new Vector2 relative to position (0, 0)
     pub fn to_vec(self) -> Vector2 {
         Vector2::diff(Point2::ZERO(), self)
     }
 
+    ///Instantiates a Point2 with (0, 0)
     fn ZERO() -> Point2 {
         Point2::new(0f32, 0f32)
+    }
+}
+
+impl ops::Add<Vector2> for Point2 {
+    type Output = Point2;
+
+    ///Overloads + for Points and Vectors: P + PQ = Q
+    fn add(self, new_vec: Vector2) -> Point2 {
+        Point2 {x: self.x + new_vec.x, y: self.y + new_vec.y}
     }
 }
 
@@ -202,5 +214,14 @@ mod tests {
         let expected = Vector2::ONE();
         assert!(expected.x == actual.x &&
             expected.y == actual.y);
+    }
+
+    #[test]
+    fn point_add_vector_result_new_point() {
+        let point = Point2::ZERO();
+        let vec = Vector2::new(2f32, 3f32);
+        let actual = point + vec;
+        assert_eq!(actual.x, 2f32);
+        assert_eq!(actual.y, 3f32);
     }
 }
