@@ -42,6 +42,10 @@ impl Vector2 {
     pub fn ZERO() -> Vector2 {
         Vector2 {x: 0f32, y: 0f32}
     }
+
+    pub fn magnitude(self) -> f32 {
+        f32::sqrt(self.x.powi(2) + self.y.powi(2))
+    }
 }
 
 impl ops::Add for Vector2 {
@@ -116,5 +120,11 @@ mod tests {
         let actual = Vector2::ONE() - Vector2::RIGHT();
         assert_eq!(actual.x, 0f32);
         assert_eq!(actual.y, 1f32);
+    }
+
+    #[test]
+    fn magnitude_of_vector() {
+        let vec = Vector2 {x: 3f32, y: 4f32};
+        assert_eq!(vec.magnitude(), 5f32);
     }
 }
