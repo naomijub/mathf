@@ -1,7 +1,7 @@
 use std::ops;
 
 ///A 3D Vector with x, y, z coordinates: Vector3
-#[derive(PartialEq, Debug)]
+#[derive(Copy, PartialEq, Debug)]
 pub struct Vector3 {
     x: f32,
     y: f32,
@@ -48,8 +48,8 @@ impl Vector3 {
         Vector3 {x: -1f32, y: 0f32, z: 0f32}
     }
 
-    ///Defines a Vector with FRONT direction (y=0, x=0, z=1)
-    pub fn FRONT() -> Vector3 {
+    ///Defines a Vector with FOWARD direction (y=0, x=0, z=1)
+    pub fn FOWARD() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: 1f32}
     }
 
@@ -79,6 +79,10 @@ impl Vector3 {
                 y: self.z * vec.x - self.x * vec.z,
                 z: self.x * vec.y - self.y * vec.x}
     }
+}
+
+impl Clone for Vector3 {
+    fn clone(&self) -> Vector3 { *self }
 }
 
 impl ops::Add for Vector3 {

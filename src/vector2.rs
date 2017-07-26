@@ -1,7 +1,7 @@
 use std::ops;
 
 ///A 2D Vector with x and y coordinates: Vector2
-#[derive(PartialEq, Debug)]
+#[derive(Copy, PartialEq, Debug)]
 pub struct Vector2 {
     x: f32,
     y: f32,
@@ -60,6 +60,10 @@ impl Vector2 {
     pub fn magnitude(self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
     }
+}
+
+impl Clone for Vector2 {
+    fn clone(&self) -> Vector2 { *self }
 }
 
 impl ops::Add for Vector2 {
@@ -238,12 +242,6 @@ mod tests {
     #[test]
     fn veirfies_vectors_linearly_dependent() {
         let actual = lin_ind(Vector2::UP(), Vector2::ONE());
-        assert_eq!(actual, false);
-    }
-
-    #[test]
-    fn veirfies_vector_zero_panics() {
-        let actual = lin_ind(Vector2::UP(), Vector2::ZERO());
         assert_eq!(actual, false);
     }
 }
