@@ -62,6 +62,13 @@ impl Vector3 {
     pub fn magnitude(self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2) + self.z.powi(2))
     }
+
+    ///Crooss product between two vectors 3.
+    pub fn x(self, vec: Vector3) -> Vector3 {
+        Vector3 {x: self.y * vec.z - self.z * vec.y,
+                y: self.z * vec.x - self.x * vec.z,
+                z: self.x * vec.y - self.y * vec.x}
+    }
 }
 
 impl ops::Add for Vector3 {
@@ -226,5 +233,15 @@ mod tests {
         assert_eq!(actual.x, 1f32);
         assert_eq!(actual.y, 1f32);
         assert_eq!(actual.z, 1f32);
+    }
+
+    #[test]
+    fn cross_product_between_2_vectors() {
+        let vec1 = Vector3::new(1f32, 2f32, 3f32);
+        let actual = vec1.x(Vector3::new(2f32, 3f32, 4f32));
+        let expected = Vector3::new(-1f32, 2f32, -1f32);
+        assert_eq!(actual.x, expected.x);
+        assert_eq!(actual.y, expected.y);
+        assert_eq!(actual.z, expected.z);
     }
 }
