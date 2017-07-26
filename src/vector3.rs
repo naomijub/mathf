@@ -48,6 +48,16 @@ impl Vector3 {
         Vector3 {x: -1f32, y: 0f32, z: 0f32}
     }
 
+    ///Defines a Vector with FRONT direction (y=0, x=0, z=1)
+    pub fn FRONT() -> Vector3 {
+        Vector3 {x: 0f32, y: 0f32, z: 1f32}
+    }
+
+    ///Defines a Vector with BACK direction (y=0, x=0, z=-1)
+    pub fn BACK() -> Vector3 {
+        Vector3 {x: 0f32, y: 0f32, z: -1f32}
+    }
+
     ///Defines a 3D Vector with x=1, y=1, z=1
     pub fn ONE() -> Vector3 {
         Vector3 {x: 1f32, y: 1f32, z: 1f32}

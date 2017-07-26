@@ -125,6 +125,10 @@ impl ops::Add<Vector2> for Point2 {
     }
 }
 
+fn lin_ind(vec1: Vector2, vec2: Vector2) -> bool {
+    vec1 * vec2 == 0f32
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -223,5 +227,23 @@ mod tests {
         let actual = point + vec;
         assert_eq!(actual.x, 2f32);
         assert_eq!(actual.y, 3f32);
+    }
+
+    #[test]
+    fn veirfies_vectors_linearly_independent() {
+        let actual = lin_ind(Vector2::UP(), Vector2::RIGHT());
+        assert_eq!(actual, true);
+    }
+
+    #[test]
+    fn veirfies_vectors_linearly_dependent() {
+        let actual = lin_ind(Vector2::UP(), Vector2::ONE());
+        assert_eq!(actual, false);
+    }
+
+    #[test]
+    fn veirfies_vector_zero_panics() {
+        let actual = lin_ind(Vector2::UP(), Vector2::ZERO());
+        assert_eq!(actual, false);
     }
 }
