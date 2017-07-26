@@ -7,7 +7,7 @@ pub struct Vector2 {
     y: f32,
 }
 
-///A 2D Vector with x and y coordinates: Vector2
+///A 2D Point with x and y coordinates: Point2
 #[derive(PartialEq, Debug)]
 pub struct Point2 {
     x: f32,
@@ -21,9 +21,9 @@ impl Vector2 {
     }
 
     ///Instantiates a new Vector2 from 2 Point2 (initial position, final position).
-    ///The new fector is created as final - initial (Points)
-    pub fn diff(initialPoint: Point2, finalPoint: Point2) -> Vector2 {
-        Vector2 {x: finalPoint.x - initialPoint.x, y: finalPoint.y - initialPoint.y}
+    ///The new vector is created as final - initial (Points)
+    pub fn diff(origin: Point2, destination: Point2) -> Vector2 {
+        Vector2 {x: destination.x - origin.x, y: destination.y - origin.y}
     }
 
     ///Defines a Vector with UP direction (y=1, x=0)
@@ -107,11 +107,11 @@ impl Point2 {
 
     ///Creates a new Vector2 relative to position (0, 0)
     pub fn to_vec(self) -> Vector2 {
-        Vector2::diff(Point2::ZERO(), self)
+        Vector2::diff(Point2::origin(), self)
     }
 
     ///Instantiates a Point2 with (0, 0)
-    fn ZERO() -> Point2 {
+    fn origin() -> Point2 {
         Point2::new(0f32, 0f32)
     }
 }
@@ -218,7 +218,7 @@ mod tests {
 
     #[test]
     fn point_add_vector_result_new_point() {
-        let point = Point2::ZERO();
+        let point = Point2::origin();
         let vec = Vector2::new(2f32, 3f32);
         let actual = point + vec;
         assert_eq!(actual.x, 2f32);
