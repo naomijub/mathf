@@ -1,7 +1,7 @@
 use std::ops;
 
 ///A 3D Vector with x, y, z coordinates: Vector3
-#[derive(Copy, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Vector3 {
     x: f32,
     y: f32,
@@ -81,10 +81,6 @@ impl Vector3 {
     }
 }
 
-impl Clone for Vector3 {
-    fn clone(&self) -> Vector3 { *self }
-}
-
 impl ops::Add for Vector3 {
     type Output = Vector3;
 
@@ -146,6 +142,13 @@ impl ops::Add<Vector3> for Point3 {
     fn add(self, new_vec: Vector3) -> Point3 {
         Point3 {x: self.x + new_vec.x, y: self.y + new_vec.y, z: self.z + new_vec.z}
     }
+}
+
+fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
+    let aux_vec1 = vec1.clone();
+    let aux_vec2 = vec2.clone();
+    let aux_vec3 = vec3.clone();
+    vec1 * vec2 == 0f32 && aux_vec1 * vec3 == 0f32 && aux_vec3 * aux_vec2 == 0f32
 }
 
 #[cfg(test)]
@@ -257,5 +260,17 @@ mod tests {
         assert_eq!(actual.x, expected.x);
         assert_eq!(actual.y, expected.y);
         assert_eq!(actual.z, expected.z);
+    }
+
+    #[test]
+    fn veirfies_vectors_linearly_independent() {
+        let actual = lin_ind(Vector3::UP(), Vector3::RIGHT(), Vector3::FOWARD());
+        assert_eq!(actual, true);
+    }
+
+    #[test]
+    fn veirfies_vectors_linearly_dependent() {
+        let actual = lin_ind(Vector3::UP(), Vector3::ONE(), Vector3::FOWARD());
+        assert_eq!(actual, false);
     }
 }
