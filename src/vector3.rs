@@ -145,10 +145,10 @@ impl ops::Add<Vector3> for Point3 {
 }
 
 fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
-    let aux_vec1 = vec1.clone();
-    let aux_vec2 = vec2.clone();
-    let aux_vec3 = vec3.clone();
-    vec1 * vec2 == 0f32 && aux_vec1 * vec3 == 0f32 && aux_vec3 * aux_vec2 == 0f32
+    let dot1 = vec1.clone() * vec2.clone();
+    let dot2 = vec1 * vec3.clone();
+    let dot3 = vec3 * vec2;
+    dot1 == 0f32 && dot2 == 0f32 && dot3 == 0f32
 }
 
 #[cfg(test)]
