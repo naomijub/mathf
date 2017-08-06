@@ -137,8 +137,7 @@ mod tests {
     fn creates_vector2_with_parameters() {
         let actual = Vector2::new(1f32, 1f32);
         let expected = Vector2 {x: 1f32, y: 1f32};
-        assert!(expected.x == actual.x &&
-            expected.y == actual.y);
+        assert_eq!(expected, actual);
     }
 
     #[test]
@@ -207,8 +206,7 @@ mod tests {
     fn creates_point2_with_parameters() {
         let actual = Point2::new(1f32, 1f32);
         let expected = Point2 {x: 1f32, y: 1f32};
-        assert!(expected.x == actual.x &&
-            expected.y == actual.y);
+        assert_eq!(expected, actual);
     }
 
     #[test]
@@ -216,8 +214,7 @@ mod tests {
         let point = Point2::new(1f32, 1f32);
         let actual = point.to_vec();
         let expected = Vector2::ONE();
-        assert!(expected.x == actual.x &&
-            expected.y == actual.y);
+        assert_eq!(expected, actual);
     }
 
     #[test]

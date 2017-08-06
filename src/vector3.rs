@@ -159,9 +159,7 @@ mod tests {
     fn creates_vector3_with_parameters() {
         let actual = Vector3::new(1f32, 1f32, 1f32);
         let expected = Vector3 {x: 1f32, y: 1f32, z: 1f32};
-        assert!(expected.x == actual.x &&
-            expected.y == actual.y &&
-            expected.z == actual.z);
+        assert_eq!(expected, actual);
     }
 
     #[test]
@@ -237,9 +235,7 @@ mod tests {
         let point = Point3::new(1f32, 1f32, 1f32);
         let actual = point.to_vec();
         let expected = Vector3::ONE();
-        assert!(expected.x == actual.x &&
-            expected.y == actual.y &&
-            expected.z == actual.z);
+        assert_eq!(expected, actual);
     }
 
     #[test]
@@ -257,9 +253,7 @@ mod tests {
         let vec1 = Vector3::new(1f32, 2f32, 3f32);
         let actual = vec1.x(Vector3::new(2f32, 3f32, 4f32));
         let expected = Vector3::new(-1f32, 2f32, -1f32);
-        assert_eq!(actual.x, expected.x);
-        assert_eq!(actual.y, expected.y);
-        assert_eq!(actual.z, expected.z);
+        assert_eq!(actual, expected);
     }
 
     #[test]
