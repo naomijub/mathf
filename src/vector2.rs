@@ -129,6 +129,12 @@ fn lin_ind(vec1: Vector2, vec2: Vector2) -> bool {
     vec1 * vec2 == 0f32
 }
 
+fn cos(vec1: Vector2, vec2: Vector2) -> f32 {
+    let dot_product = vec1.clone() * vec2.clone();
+    let denominator = vec1.magnitude() * vec2.magnitude();
+    dot_product / denominator
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -236,5 +242,12 @@ mod tests {
     fn veirfies_vectors_linearly_dependent() {
         let actual = lin_ind(Vector2::UP(), Vector2::ONE());
         assert_eq!(actual, false);
+    }
+
+    #[test]
+    fn verifies_cos_between_vecs() {
+        let vec1 = Vector2::new(4f32, 3f32);
+        let vec2 = Vector2::new(3f32, 4f32);
+        assert_eq!(0.96f32, cos(vec1, vec2));
     }
 }
