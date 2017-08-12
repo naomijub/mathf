@@ -133,6 +133,11 @@ impl Point3 {
     fn origin() -> Point3 {
         Point3::new(0f32, 0f32, 0f32)
     }
+
+    ///Instantiates a Point3 with (1, 1, 1)
+    fn ONE() -> Point3 {
+        Point3::new(1f32, 1f32, 1f32)
+    }
 }
 
 impl ops::Add<Vector3> for Point3 {
@@ -144,6 +149,7 @@ impl ops::Add<Vector3> for Point3 {
     }
 }
 
+///Vector3 linear indenpendency
 fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
     let dot1 = vec1.clone() * vec2.clone();
     let dot2 = vec1 * vec3.clone();
@@ -151,10 +157,19 @@ fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
     dot1 == 0f32 && dot2 == 0f32 && dot3 == 0f32
 }
 
+/// Cos between two vector3
 fn cos(vec1: Vector3, vec2: Vector3) -> f32 {
     let dot_product = vec1.clone() * vec2.clone();
     let denominator = vec1.magnitude() * vec2.magnitude();
     dot_product / denominator
+}
+
+///Distance between 2 point3
+fn dist(a: Point3, b: Point3) -> f32 {
+    let x_dist = (a.x - b.x).powi(2);
+    let y_dist = (a.y - b.y).powi(2);
+    let z_dist = (a.z - b.z).powi(2);
+    (x_dist + y_dist + z_dist).sqrt()
 }
 
 #[cfg(test)]
@@ -279,5 +294,10 @@ mod tests {
         let vec1 = Vector3::new(4f32, 3f32, 5f32);
         let vec2 = Vector3::new(3f32, 4f32, 5f32);
         assert_eq!(0.98f32, cos(vec1, vec2));
+    }
+
+    #[test]
+    fn dist_origin_point_one() {
+        assert_eq!(1.7320508f32, dist(Point3::origin(), Point3::ONE()));
     }
 }
