@@ -1,4 +1,5 @@
 language: rust
+sudo: enabled
 rust:
   - stable
   - beta
