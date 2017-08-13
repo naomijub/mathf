@@ -130,11 +130,13 @@ impl ops::Add<Vector2> for Point2 {
     }
 }
 
+#[allow(dead_code)]
 ///Vector2 linear indenpendency
 fn lin_ind(vec1: Vector2, vec2: Vector2) -> bool {
     vec1 * vec2 == 0f32
 }
 
+#[allow(dead_code)]
 /// Cos between two vector2
 fn cos(vec1: Vector2, vec2: Vector2) -> f32 {
     let dot_product = vec1.clone() * vec2.clone();
@@ -142,6 +144,7 @@ fn cos(vec1: Vector2, vec2: Vector2) -> f32 {
     dot_product / denominator
 }
 
+#[allow(dead_code)]
 ///Distance between 2 point2
 fn dist(a: Point2, b: Point2) -> f32 {
     let x_dist = (a.x - b.x).powi(2);

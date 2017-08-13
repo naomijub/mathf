@@ -17,52 +17,62 @@ pub struct Point3 {
 }
 
 impl Vector3 {
+    #[allow(dead_code)]
     ///Instantiates a new vector with to be defined values of x, y, z;
     pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
         Vector3 {x: x, y: y, z: z}
     }
 
+    #[allow(dead_code)]
     ///Instantiates a new Vector3 from 2 Point3 (initial position, final position).
     ///The new vector is created as final - initial (Points)
     pub fn diff(origin: Point3, destination: Point3) -> Vector3 {
         Vector3 {x: destination.x - origin.x, y: destination.y - origin.y, z: destination.z - origin.z}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with UP direction (y=1, x=0, z=0)
     pub fn UP() -> Vector3 {
         Vector3 {x: 0f32, y: 1f32, z: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with DOWN direction (y=-1, x=0, z=0)
     pub fn DOWN() -> Vector3 {
         Vector3 {x: 0f32, y: -1f32, z: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with RIGHT direction (y=0, x=1, z=0)
     pub fn RIGHT() -> Vector3 {
         Vector3 {x: 1f32, y: 0f32, z: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with LEFT direction (y=0, x=-1, z=0)
     pub fn LEFT() -> Vector3 {
         Vector3 {x: -1f32, y: 0f32, z: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with FOWARD direction (y=0, x=0, z=1)
     pub fn FOWARD() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: 1f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with BACK direction (y=0, x=0, z=-1)
     pub fn BACK() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: -1f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a 3D Vector with x=1, y=1, z=1
     pub fn ONE() -> Vector3 {
         Vector3 {x: 1f32, y: 1f32, z: 1f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Modulus ZERO Vector (x=0, y=0, z=0)
     pub fn ZERO() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: 0f32}
@@ -73,6 +83,7 @@ impl Vector3 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2) + self.z.powi(2))
     }
 
+    #[allow(dead_code)]
     ///Crooss product between two vectors 3.
     pub fn x(self, vec: Vector3) -> Vector3 {
         Vector3 {x: self.y * vec.z - self.z * vec.y,
@@ -149,6 +160,7 @@ impl ops::Add<Vector3> for Point3 {
     }
 }
 
+#[allow(dead_code)]
 ///Vector3 linear indenpendency
 fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
     let dot1 = vec1.clone() * vec2.clone();
@@ -157,6 +169,7 @@ fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
     dot1 == 0f32 && dot2 == 0f32 && dot3 == 0f32
 }
 
+#[allow(dead_code)]
 /// Cos between two vector3
 fn cos(vec1: Vector3, vec2: Vector3) -> f32 {
     let dot_product = vec1.clone() * vec2.clone();
@@ -164,6 +177,7 @@ fn cos(vec1: Vector3, vec2: Vector3) -> f32 {
     dot_product / denominator
 }
 
+#[allow(dead_code)]
 ///Distance between 2 point3
 fn dist(a: Point3, b: Point3) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
