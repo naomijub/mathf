@@ -135,16 +135,19 @@ impl Point3 {
         Point3 {x: x, y: y, z: z}
     }
 
+    #[allow(dead_code)]
     ///Creates a new Vector3 relative to position (0, 0, 0)
     pub fn to_vec(self) -> Vector3 {
         Vector3::diff(Point3::origin(), self)
     }
 
+    #[allow(dead_code)]
     ///Instantiates a Point3 with (0, 0, 0)
     fn origin() -> Point3 {
         Point3::new(0f32, 0f32, 0f32)
     }
 
+    #[allow(dead_code)]
     ///Instantiates a Point3 with (1, 1, 1)
     fn ONE() -> Point3 {
         Point3::new(1f32, 1f32, 1f32)

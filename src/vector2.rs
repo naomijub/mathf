@@ -20,42 +20,50 @@ impl Vector2 {
         Vector2 {x: x, y: y}
     }
 
+    #[allow(dead_code)]
     ///Instantiates a new Vector2 from 2 Point2 (initial position, final position).
     ///The new vector is created as final - initial (Points)
     pub fn diff(origin: Point2, destination: Point2) -> Vector2 {
         Vector2 {x: destination.x - origin.x, y: destination.y - origin.y}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with UP direction (y=1, x=0)
     pub fn UP() -> Vector2 {
         Vector2 {x: 0f32, y: 1f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with DOWN direction (y=-1, x=0)
     pub fn DOWN() -> Vector2 {
         Vector2 {x: 0f32, y: -1f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with RIGHT direction (y=0, x=1)
     pub fn RIGHT() -> Vector2 {
         Vector2 {x: 1f32, y: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Vector with LEFT direction (y=0, x=-1)
     pub fn LEFT() -> Vector2 {
         Vector2 {x: -1f32, y: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a 2D Vector with x=1 and y=1
     pub fn ONE() -> Vector2 {
         Vector2 {x: 1f32, y: 1f32}
     }
 
+    #[allow(dead_code)]
     ///Defines a Modulus ZERO Vector (x=0, y=0)
     pub fn ZERO() -> Vector2 {
         Vector2 {x: 0f32, y: 0f32}
     }
 
+    #[allow(dead_code)]
     ///Vector magnitude: the square root of the sum of each vector part to the power of 2
     pub fn magnitude(self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
@@ -105,6 +113,7 @@ impl Point2 {
         Point2 {x: x, y: y}
     }
 
+    #[allow(dead_code)]
     ///Creates a new Vector2 relative to position (0, 0)
     pub fn to_vec(self) -> Vector2 {
         Vector2::diff(Point2::origin(), self)
@@ -115,6 +124,7 @@ impl Point2 {
         Point2::new(0f32, 0f32)
     }
 
+    #[allow(dead_code)]
     ///Instantiates a Point2 with (1, 1)
     fn ONE() -> Point2 {
         Point2::new(1f32, 1f32)
