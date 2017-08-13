@@ -30,49 +30,49 @@ impl Vector3 {
         Vector3 {x: destination.x - origin.x, y: destination.y - origin.y, z: destination.z - origin.z}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with UP direction (y=1, x=0, z=0)
     pub fn UP() -> Vector3 {
         Vector3 {x: 0f32, y: 1f32, z: 0f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with DOWN direction (y=-1, x=0, z=0)
     pub fn DOWN() -> Vector3 {
         Vector3 {x: 0f32, y: -1f32, z: 0f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with RIGHT direction (y=0, x=1, z=0)
     pub fn RIGHT() -> Vector3 {
         Vector3 {x: 1f32, y: 0f32, z: 0f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with LEFT direction (y=0, x=-1, z=0)
     pub fn LEFT() -> Vector3 {
         Vector3 {x: -1f32, y: 0f32, z: 0f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with FOWARD direction (y=0, x=0, z=1)
     pub fn FOWARD() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: 1f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with BACK direction (y=0, x=0, z=-1)
     pub fn BACK() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: -1f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a 3D Vector with x=1, y=1, z=1
     pub fn ONE() -> Vector3 {
         Vector3 {x: 1f32, y: 1f32, z: 1f32}
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Defines a Modulus ZERO Vector (x=0, y=0, z=0)
     pub fn ZERO() -> Vector3 {
         Vector3 {x: 0f32, y: 0f32, z: 0f32}
@@ -147,7 +147,7 @@ impl Point3 {
         Point3::new(0f32, 0f32, 0f32)
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, non_snake_case)]
     ///Instantiates a Point3 with (1, 1, 1)
     fn ONE() -> Point3 {
         Point3::new(1f32, 1f32, 1f32)
