@@ -3,17 +3,17 @@ use std::ops;
 ///A 3D Vector with x, y, z coordinates: Vector3
 #[derive(Clone, PartialEq, Debug)]
 pub struct Vector3 {
-    x: f32,
-    y: f32,
-    z: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 ///A 3D Point with x, y and z coordinates: Point3
 #[derive(PartialEq, Debug)]
 pub struct Point3 {
-    x: f32,
-    y: f32,
-    z: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 impl Vector3 {
@@ -164,7 +164,7 @@ impl ops::Add<Vector3> for Point3 {
 }
 
 #[allow(dead_code)]
-///Vector3 linear indenpendency
+///Vector3 linear indenpendency (3D)
 fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
     let dot1 = vec1.clone() * vec2.clone();
     let dot2 = vec1 * vec3.clone();

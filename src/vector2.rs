@@ -3,15 +3,15 @@ use std::ops;
 ///A 2D Vector with x and y coordinates: Vector2
 #[derive(Clone, PartialEq, Debug)]
 pub struct Vector2 {
-    x: f32,
-    y: f32,
+    pub x: f32,
+    pub y: f32,
 }
 
 ///A 2D Point with x and y coordinates: Point2
 #[derive(PartialEq, Debug)]
 pub struct Point2 {
-    x: f32,
-    y: f32,
+    pub x: f32,
+    pub y: f32,
 }
 
 impl Vector2 {
@@ -141,7 +141,7 @@ impl ops::Add<Vector2> for Point2 {
 }
 
 #[allow(dead_code)]
-///Vector2 linear indenpendency
+///Vector2 linear indenpendency (2D)
 fn lin_ind(vec1: Vector2, vec2: Vector2) -> bool {
     vec1 * vec2 == 0f32
 }
