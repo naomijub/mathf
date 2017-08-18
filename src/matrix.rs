@@ -1,4 +1,5 @@
 use super::vector3::Vector3;
+use super::vector2::Vector2;
 use std::ops;
 
 ///Implements a matrix 3 x 3
@@ -7,6 +8,13 @@ pub struct Matrix3x3 {
     pub r1: Vector3,
     pub r2: Vector3,
     pub r3: Vector3,
+}
+
+///Implements a matrix 2 x 2
+#[derive(Clone, PartialEq, Debug)]
+pub struct Matrix2x2 {
+    pub r1: Vector2,
+    pub r2: Vector2,
 }
 
 impl Matrix3x3 {
@@ -39,6 +47,31 @@ impl Matrix3x3 {
         - (self.r1.z * self.r2.y * self.r3.x +
             self.r1.y * self.r2.x * self.r3.z +
             self.r1.x * self.r2.z * self.r3.y)
+    }
+}
+
+impl Matrix2x2 {
+
+    ///Creates a new Matrix2x2 from 2 vector2 rows
+    pub fn new(r1: Vector2, r2: Vector2) -> Matrix2x2 {
+        Matrix2x2 {r1: r1, r2: r2}
+    }
+
+    ///Creates a new Matrix2x2 from 4 indexed floats
+    pub fn new_idx(n1: f32, n2: f32, n3: f32, n4: f32) -> Matrix2x2 {
+
+        Matrix2x2 {r1: Vector2::new(n1, n2),
+            r2: Vector2::new(n3, n4)}
+    }
+
+    #[allow(dead_code, non_snake_case)]
+    pub fn IDENTITY() -> Matrix2x2 {
+        Matrix2x2::new_idx(1f32, 0f32, 0f32, 1f32)
+    }
+
+    ///Matrix 2x2 determinant
+    pub fn det(self) -> f32 {
+        self.r1.x * self.r2.y - self.r1.y * self.r2.x
     }
 }
 
@@ -93,7 +126,7 @@ impl ops::Mul<Matrix3x3> for f32 {
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_matrix3x3 {
     use super::*;
 
     #[test]
@@ -158,5 +191,45 @@ mod tests {
     fn det_of_4_times_identity_is_64() {
         let identity_4 = 4f32 *  Matrix3x3::IDENTITY();
         assert_eq!(64f32, identity_4.det());
+    }
+}
+
+#[cfg(test)]
+mod tests_matrix2x2 {
+    use super::*;
+
+    #[test]
+    fn matrix_created_new_from_2_vector2() {
+        let actual = Matrix2x2::new(Vector2::new(1f32, 2f32),
+                                    Vector2::new(1f32, 2f32));
+        let expected = Matrix2x2 {
+            r1: Vector2::new(1f32, 2f32),
+            r2: Vector2::new(1f32, 2f32)
+        };
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn matrix_created_new_from_4_floats() {
+        let actual = Matrix2x2::new_idx(1f32, 1f32, 1f32, 1f32);
+        let expected = Matrix2x2 {
+            r1: Vector2::new(1f32, 1f32),
+            r2: Vector2::new(1f32, 1f32)
+        };
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn seq_maxtrix_det() {
+        let matrix = Matrix2x2::new_idx(4f32, 2f32, 3f32, 4f32);
+        let actual = matrix.det();
+        let expected = 10f32;
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn identity_matrix_has_det_1() {
+        let identity = Matrix2x2::IDENTITY();
+        assert_eq!(1f32, identity.det());
     }
 }
