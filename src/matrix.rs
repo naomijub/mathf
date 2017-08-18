@@ -25,6 +25,13 @@ impl Matrix3x3 {
                    r3: Vector3::new(n7, n8, n9)}
     }
 
+    #[allow(dead_code, non_snake_case)]
+    pub fn IDENTITY() -> Matrix3x3 {
+        Matrix3x3::new_idx(1f32, 0f32, 0f32, 0f32, 1f32, 0f32,
+                           0f32, 0f32, 1f32)
+    }
+
+    ///Matrix 3x3 determinant
     pub fn det(self) -> f32 {
         (self.r1.x * self.r2.y * self.r3.z +
             self.r1.y * self.r2.z * self.r3.x +
@@ -32,6 +39,19 @@ impl Matrix3x3 {
         - (self.r1.z * self.r2.y * self.r3.x +
             self.r1.y * self.r2.x * self.r3.z +
             self.r1.x * self.r2.z * self.r3.y)
+    }
+}
+
+impl ops::Add for Matrix3x3 {
+    type Output = Matrix3x3;
+
+    ///Implements the Matrix 3x3 '+' trait
+    fn add(self, new: Matrix3x3) -> Matrix3x3 {
+        Matrix3x3::new(
+            Vector3::new(self.r1.x + new.r1.x, self.r1.y + new.r1.y, self.r1.z + new.r1.z),
+            Vector3::new(self.r2.x + new.r2.x, self.r2.y + new.r2.y, self.r2.z + new.r2.z),
+            Vector3::new(self.r3.x + new.r3.x, self.r3.y + new.r3.y, self.r3.z + new.r3.z)
+        )
     }
 }
 
@@ -43,6 +63,19 @@ impl ops::Mul<Vector3> for Matrix3x3 {
         Vector3 {x: self.r1 * vec.clone(),
             y: self.r2 * vec.clone(),
             z: self.r3 * vec.clone()}
+    }
+}
+
+impl ops::Mul<f32> for Matrix3x3 {
+    type Output = Matrix3x3;
+
+    ///Implements the Matrix 3x3 '*' trait for `Matrix3x3 * f32` so that `(identity * value).det() == valueˆ3`.
+    fn mul(self, value: f32) -> Matrix3x3 {
+        Matrix3x3::new(
+            Vector3::new(self.r1.x * value, self.r1.y * value, self.r1.z * value),
+            Vector3::new(self.r2.x * value, self.r2.y * value, self.r2.z * value),
+            Vector3::new(self.r3.x * value, self.r3.y * value, self.r3.z * value)
+        )
     }
 }
 
@@ -88,5 +121,23 @@ mod tests {
         let actual = matrix.det();
         let expected = 12f32;
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn identity_matrix_has_det_1() {
+        let identity = Matrix3x3::IDENTITY();
+        assert_eq!(1f32, identity.det());
+    }
+
+    #[test]
+    fn identity_plus_identity_has_det_8() {
+        let identities = Matrix3x3::IDENTITY() + Matrix3x3::IDENTITY();
+        assert_eq!(8f32, identities.det());
+    }
+
+    #[test]
+    fn det_of_identity_times_3_is_27() {
+        let identity_3 = Matrix3x3::IDENTITY() * 3f32;
+        assert_eq!(27f32, identity_3.det());
     }
 }
