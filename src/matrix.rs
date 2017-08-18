@@ -4,9 +4,9 @@ use std::ops;
 ///Implements a matrix 3 x 3
 #[derive(Clone, PartialEq, Debug)]
 pub struct Matrix3x3 {
-    r1: Vector3,
-    r2: Vector3,
-    r3: Vector3,
+    pub r1: Vector3,
+    pub r2: Vector3,
+    pub r3: Vector3,
 }
 
 impl Matrix3x3 {
