@@ -79,6 +79,19 @@ impl ops::Mul<f32> for Matrix3x3 {
     }
 }
 
+impl ops::Mul<Matrix3x3> for f32 {
+    type Output = Matrix3x3;
+
+    ///Implements the Matrix 3x3 '*' trait for `Matrix3x3 * f32` so that `(value * identity).det() == valueˆ3` and `ßM == Mß`˜.
+    fn mul(self, m: Matrix3x3) -> Matrix3x3 {
+        Matrix3x3::new(
+            Vector3::new(m.r1.x * self, m.r1.y * self, m.r1.z * self),
+            Vector3::new(m.r2.x * self, m.r2.y * self, m.r2.z * self),
+            Vector3::new(m.r3.x * self, m.r3.y * self, m.r3.z * self)
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -139,5 +152,11 @@ mod tests {
     fn det_of_identity_times_3_is_27() {
         let identity_3 = Matrix3x3::IDENTITY() * 3f32;
         assert_eq!(27f32, identity_3.det());
+    }
+
+    #[test]
+    fn det_of_4_times_identity_is_64() {
+        let identity_4 = 4f32 *  Matrix3x3::IDENTITY();
+        assert_eq!(64f32, identity_4.det());
     }
 }
