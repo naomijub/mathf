@@ -24,6 +24,15 @@ impl Matrix3x3 {
                    r2: Vector3::new(n4, n5, n6),
                    r3: Vector3::new(n7, n8, n9)}
     }
+
+    pub fn det(self) -> f32 {
+        (self.r1.x * self.r2.y * self.r3.z +
+            self.r1.y * self.r2.z * self.r3.x +
+            self.r1.z * self.r2.x * self.r3.y)
+        - (self.r1.z * self.r2.y * self.r3.x +
+            self.r1.y * self.r2.x * self.r3.z +
+            self.r1.x * self.r2.z * self.r3.y)
+    }
 }
 
 impl ops::Mul<Vector3> for Matrix3x3 {
@@ -31,9 +40,9 @@ impl ops::Mul<Vector3> for Matrix3x3 {
 
     ///Implements the transform matrix of a vector 3 into another vector 3.
     fn mul(self, vec: Vector3) -> Vector3 {
-        Vector3 {x: self.r1.x * vec.x + self.r1.y * vec.y + self.r1.z * vec.z,
-            y: self.r2.x * vec.x + self.r2.y * vec.y + self.r2.z * vec.z,
-            z: self.r3.x * vec.x + self.r3.y * vec.y + self.r3.z * vec.z}
+        Vector3 {x: self.r1 * vec.clone(),
+            y: self.r2 * vec.clone(),
+            z: self.r3 * vec.clone()}
     }
 }
 
@@ -69,6 +78,15 @@ mod tests {
                                         4f32, 5f32, 6f32, 7f32, 8f32, 9f32);
         let actual = matrix * vec;
         let expected = Vector3::new(14f32, 32f32, 50f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn seq_maxtrix_det() {
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32,
+                                        4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let actual = matrix.det();
+        let expected = 12f32;
         assert_eq!(expected, actual);
     }
 }
