@@ -92,6 +92,7 @@ impl ops::Mul<Vector3> for Matrix3x3 {
     type Output = Vector3;
 
     ///Implements the transform matrix of a vector 3 into another vector 3.
+    /// The order should be matrix * vector becaus of 3x3 * 3x1 = 3x1
     fn mul(self, vec: Vector3) -> Vector3 {
         Vector3 {x: self.r1 * vec.clone(),
             y: self.r2 * vec.clone(),
@@ -165,6 +166,7 @@ impl ops::Mul<Vector2> for Matrix2x2 {
     type Output = Vector2;
 
     ///Implements the transform matrix of a vector 2 into another vector 2.
+    /// The order should be matrix * vector becaus of 2x2 * 2x1 = 2x1
     fn mul(self, vec: Vector2) -> Vector2 {
         Vector2 {x: self.r1 * vec.clone(),
             y: self.r2 * vec.clone()}
