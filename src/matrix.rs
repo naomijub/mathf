@@ -125,6 +125,52 @@ impl ops::Mul<Matrix3x3> for f32 {
     }
 }
 
+impl ops::Add for Matrix2x2 {
+    type Output = Matrix2x2;
+
+    ///Implements the Matrix 2x2 '+' trait
+    fn add(self, new: Matrix2x2) -> Matrix2x2 {
+        Matrix2x2::new(
+            Vector2::new(self.r1.x + new.r1.x, self.r1.y + new.r1.y),
+            Vector2::new(self.r2.x + new.r2.x, self.r2.y + new.r2.y)
+        )
+    }
+}
+
+impl ops::Mul<f32> for Matrix2x2 {
+    type Output = Matrix2x2;
+
+    ///Implements the Matrix 2x2 '*' trait for `Matrix2x2 * f32` so that `(identity * value).det() == valueˆ2`.
+    fn mul(self, value: f32) -> Matrix2x2 {
+        Matrix2x2::new(
+            Vector2::new(self.r1.x * value, self.r1.y * value),
+            Vector2::new(self.r2.x * value, self.r2.y * value)
+        )
+    }
+}
+
+impl ops::Mul<Matrix2x2> for f32 {
+    type Output = Matrix2x2;
+
+    ///Implements the Matrix 2x2 '*' trait for `Matrix2x2 * f32` so that `(value * identity).det() == valueˆ2` and `ßM == Mß`˜.
+    fn mul(self, m: Matrix2x2) -> Matrix2x2 {
+        Matrix2x2::new(
+            Vector2::new(m.r1.x * self, m.r1.y * self),
+            Vector2::new(m.r2.x * self, m.r2.y * self)
+        )
+    }
+}
+
+impl ops::Mul<Vector2> for Matrix2x2 {
+    type Output = Vector2;
+
+    ///Implements the transform matrix of a vector 2 into another vector 2.
+    fn mul(self, vec: Vector2) -> Vector2 {
+        Vector2 {x: self.r1 * vec.clone(),
+            y: self.r2 * vec.clone()}
+    }
+}
+
 #[cfg(test)]
 mod tests_matrix3x3 {
     use super::*;
@@ -231,5 +277,32 @@ mod tests_matrix2x2 {
     fn identity_matrix_has_det_1() {
         let identity = Matrix2x2::IDENTITY();
         assert_eq!(1f32, identity.det());
+    }
+
+    #[test]
+    fn identity_plus_identity_has_det_8() {
+        let identities = Matrix2x2::IDENTITY() + Matrix2x2::IDENTITY();
+        assert_eq!(4f32, identities.det());
+    }
+
+    #[test]
+    fn det_of_identity_times_3_is_9() {
+        let identity_3 = Matrix2x2::IDENTITY() * 3f32;
+        assert_eq!(9f32, identity_3.det());
+    }
+
+    #[test]
+    fn det_of_4_times_identity_is_16() {
+        let identity_4 = 4f32 *  Matrix2x2::IDENTITY();
+        assert_eq!(16f32, identity_4.det());
+    }
+
+    #[test]
+    fn vector_transform_by_matrix() {
+        let vec = Vector2::new(1f32, 2f32);
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32,4f32);
+        let actual = matrix * vec;
+        let expected = Vector2::new(5f32, 11f32);
+        assert_eq!(expected, actual);
     }
 }
