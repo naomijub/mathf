@@ -90,6 +90,12 @@ impl Vector3 {
                 y: self.z * vec.x - self.x * vec.z,
                 z: self.x * vec.y - self.y * vec.x}
     }
+
+    #[allow(dead_code)]
+    ///Transforms a Vector3 into a Vec<f32>
+    pub fn to_vector(self) -> Vec<f32> {
+        vec![self.x, self.y, self.z]
+    }
 }
 
 impl ops::Add for Vector3 {
@@ -316,5 +322,12 @@ mod tests {
     #[test]
     fn dist_origin_point_one() {
         assert_eq!(1.7320508f32, dist(Point3::origin(), Point3::ONE()));
+    }
+
+    #[test]
+    fn vector3_to_vec() {
+        let vec = Vector3::new(4f32, 3f32, 5f32);
+        let expected = vec![4f32, 3f32, 5f32];
+        assert_eq!(expected, vec.to_vector());
     }
 }

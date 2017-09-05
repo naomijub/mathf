@@ -48,6 +48,13 @@ impl Matrix3x3 {
             self.r1.y * self.r2.x * self.r3.z +
             self.r1.x * self.r2.z * self.r3.y)
     }
+
+    ///Transforms a Matrix3x3 into a Vec<Vec<f32>>
+    pub fn vectorize(self) -> Vec<Vec<f32>> {
+        vec![self.r1.to_vector(),
+             self.r2.to_vector(),
+             self.r3.to_vector()]
+    }
 }
 
 impl Matrix2x2 {
@@ -72,6 +79,16 @@ impl Matrix2x2 {
     ///Matrix 2x2 determinant
     pub fn det(self) -> f32 {
         self.r1.x * self.r2.y - self.r1.y * self.r2.x
+    }
+
+    ///Inverse of a Matrix 2x2
+    pub fn inverse(self) -> Matrix2x2 {
+        let det = self.clone().det();
+        if det == 0f32 {
+            panic!("Determinant should be different from ZERO");
+        }
+        Matrix2x2::new(Vector2::new(self.r2.y / det, -self.r1.y / det),
+                        Vector2::new(-self.r2.x / det, self.r1.x / det))
     }
 }
 
@@ -306,5 +323,34 @@ mod tests_matrix2x2 {
         let actual = matrix * vec;
         let expected = Vector2::new(5f32, 11f32);
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    #[should_panic]
+    fn matrix_inverse_panic_for_det_0() {
+        let matrix = Matrix2x2::new_idx(1f32, 1f32, 1f32, 1f32);
+        matrix.inverse();
+    }
+
+    #[test]
+    fn matrix_inverse() {
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let expected = Matrix2x2::new_idx(-2f32, 1f32, 1.5f32, -0.5f32);
+        assert_eq!(expected, matrix.inverse());
+    }
+}
+
+#[cfg(test)]
+mod tests_matrix_generation {
+    use super::*;
+
+    #[test]
+    fn generate_vectorized_matrix() {
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32,
+                                        4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let expected = vec![vec![1f32, 2f32, 3f32],
+                            vec![4f32, 5f32, 6f32],
+                            vec![7f32, 8f32, 5f32]];
+        assert_eq!(expected, matrix.vectorize());
     }
 }
