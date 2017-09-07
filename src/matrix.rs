@@ -55,6 +55,25 @@ impl Matrix3x3 {
              self.r2.to_vector(),
              self.r3.to_vector()]
     }
+
+    #[allow(dead_code)]
+    ///NOT YET FUNCTIONALLY REFACTORED: Produces a Matrix 2x2 off the values passed as x and y
+    fn sub(self, x: usize, y: usize) -> Matrix2x2 {
+        let vec_matrix = self.vectorize();
+        let mut submatrix :Vec<f32> = Vec::new();
+
+        for x_value in 0..3 {
+            if x_value != x {
+                for y_value in 0..3 {
+                    if y_value != y {
+                        submatrix.push(vec_matrix[x_value][y_value]);
+                    }
+                }
+            }
+        }
+
+        Matrix2x2::new_idx(submatrix[0], submatrix[1], submatrix[2], submatrix[3])
+    }
 }
 
 impl Matrix2x2 {
@@ -352,5 +371,23 @@ mod tests_matrix_generation {
                             vec![4f32, 5f32, 6f32],
                             vec![7f32, 8f32, 5f32]];
         assert_eq!(expected, matrix.vectorize());
+    }
+
+    #[test]
+    fn generate_submatrix_from_0_0() {
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32,
+                                        4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let expected = Matrix2x2::new(Vector2::new(5f32, 6f32),
+                                      Vector2::new(8f32, 5f32));
+        assert_eq!(expected, matrix.sub(0, 0));
+    }
+
+    #[test]
+    fn generate_submatrix_from_1_1() {
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32,
+                                        4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let expected = Matrix2x2::new(Vector2::new(1f32, 3f32),
+                                      Vector2::new(7f32, 5f32));
+        assert_eq!(expected, matrix.sub(1, 1));
     }
 }
