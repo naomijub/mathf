@@ -1,3 +1,5 @@
+use super::matrix::Matrix2x2 as M;
+
 use std::ops;
 
 ///A 2D Vector with x and y coordinates: Vector2
@@ -67,6 +69,20 @@ impl Vector2 {
     ///Vector magnitude: the square root of the sum of each vector part to the power of 2
     pub fn magnitude(self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
+    }
+
+    #[allow(dead_code)]
+    ///Transforms a Vector 2 from one vectorspace to another via a matrix2x2 transform
+    pub fn transform(self, m: M, vec: Vector2) -> Vector2 {
+        (m * self) + vec
+    }
+
+    #[allow(dead_code)]
+    ///Scales a Vector 2 in a non uniform way: (a, b * (x, y) = (ax, by)
+    pub fn nonuniform_scale(self, a: f32, b: f32) -> Vector2 {
+        let scale_matrix = M::new(Vector2::new(a, 0f32),
+                                            Vector2::new(0f32, b));
+        self.transform(scale_matrix, Vector2::ZERO())
     }
 }
 
@@ -281,5 +297,22 @@ mod tests {
     #[test]
     fn dist_origin_point_one() {
         assert_eq!(1.4142135f32, dist(Point2::origin(), Point2::ONE()));
+    }
+
+    #[test]
+    fn transform_vector3_to_another_space_vector3() {
+        let vec = Vector2::new(1f32, 2f32);
+        let transform_matrix = M::new_idx(1f32, 2f32, 3f32, 4f32);
+        let vec_transform_vec = Vector2::new(3f32, 4f32);
+
+        assert_eq!(Vector2::new(8f32, 15f32), vec.transform(transform_matrix, vec_transform_vec));
+    }
+
+    #[test]
+    fn nonuniform_scale_by_4_3() {
+        let vec = Vector2::ONE();
+        let expected = Vector2::new(4f32, 3f32);
+
+        assert_eq!(expected, vec.nonuniform_scale(4f32, 3f32));
     }
 }

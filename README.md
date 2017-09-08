@@ -14,6 +14,10 @@ Math basics for a game frameworks and engines.
 * Eric Lengyel, Mathmatics for 3D Game Programming and Computer Graphics, Third edition, Cengage Learning.
 * Ivan de Camargo, Geometria Analítica - Um tratamento Vetorial, Third Edition, Pearson
 
+## Current TODO:
+* Vector Rotation
+* Quaternions
+
 
 ## Possible features - not in development at this momment:
 -  Linear Systems

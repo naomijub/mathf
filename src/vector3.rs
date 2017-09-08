@@ -1,3 +1,4 @@
+use super::matrix::Matrix3x3 as M;
 use std::ops;
 
 ///A 3D Vector with x, y, z coordinates: Vector3
@@ -95,6 +96,21 @@ impl Vector3 {
     ///Transforms a Vector3 into a Vec<f32>
     pub fn to_vector(self) -> Vec<f32> {
         vec![self.x, self.y, self.z]
+    }
+
+    #[allow(dead_code)]
+    ///Transforms a Vector 3 from one vectorspace to another  via a matrix3x3 transform
+    pub fn transform(self, m: M, vec: Vector3) -> Vector3 {
+        (m * self) + vec
+    }
+
+    #[allow(dead_code)]
+    ///Scales a Vector 3 in a non uniform way: (a, b, c) * (x, y, z) = (ax, by, cz)
+    pub fn nonuniform_scale(self, a: f32, b: f32, c: f32) -> Vector3 {
+        let scale_matrix = M::new(Vector3::new(a, 0f32, 0f32),
+                                            Vector3::new(0f32, b, 0f32),
+                                            Vector3::new(0f32, 0f32, c));
+        self.transform(scale_matrix, Vector3::ZERO())
     }
 }
 
@@ -328,6 +344,25 @@ mod tests {
     fn vector3_to_vec() {
         let vec = Vector3::new(4f32, 3f32, 5f32);
         let expected = vec![4f32, 3f32, 5f32];
+
         assert_eq!(expected, vec.to_vector());
+    }
+
+    #[test]
+    fn transform_vector3_to_another_space_vector3() {
+        let vec = Vector3::new(1f32, 2f32, 3f32);
+        let transform_matrix = M::new_idx(1f32, 2f32, 3f32,
+                                        4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let vec_transform_vec = Vector3::new(3f32, 4f32, 6f32);
+
+        assert_eq!(Vector3::new(17f32, 36f32, 44f32), vec.transform(transform_matrix, vec_transform_vec));
+    }
+
+    #[test]
+    fn nonuniform_scale_by_1_2_3() {
+        let vec = Vector3::ONE();
+        let expected = Vector3::new(1f32, 2f32, 3f32);
+
+        assert_eq!(expected, vec.nonuniform_scale(1f32, 2f32, 3f32));
     }
 }
