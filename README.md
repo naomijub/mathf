@@ -1,7 +1,7 @@
 # mathf
 
 ![Build Status](https://github.com/naomijub/mathf/actions/workflows/rust.yml/badge.svg)
-[![codecov](https://codecov.io/gh/naomijub/mathf/branch/master/graph/badge.svg?token=USB921ZL6B)](https://codecov.io/gh/naomijub/mathf)
+[![codecov](https://codecov.io/gh/naomijub/mathf/branch/master/graph/badge.svg?token=VJH0JMC7WW)](https://codecov.io/gh/naomijub/mathf)
 [![Crates.io](https://img.shields.io/crates/v/mathf.svg?style=flat-square)](https://crates.io/crates/mathf)
 **Math basics for a game frameworks and engines**
 
