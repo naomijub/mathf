@@ -1,3 +1,6 @@
+use crate::error::Error;
+use crate::math_helper;
+
 use super::vector3::Vector3;
 use super::vector2::Vector2;
 use std::ops;
@@ -82,13 +85,15 @@ impl Matrix2x2 {
     }
 
     ///Inverse of a Matrix 2x2
-    pub fn inverse(self) -> Matrix2x2 {
+    pub fn inverse(self, delta: f32) -> Result<Matrix2x2, Error> {
         let det = self.clone().det();
-        if det == 0f32 {
-            panic!("Determinant should be different from ZERO");
+        
+        if math_helper::float_eq(det, 0f32, delta) {
+            Err(Error::NonZeroDeterminantMatrix)
+        } else {
+            Ok(Matrix2x2::new(Vector2::new(self.r2.y / det, -self.r1.y / det),
+                Vector2::new(-self.r2.x / det, self.r1.x / det)))
         }
-        Matrix2x2::new(Vector2::new(self.r2.y / det, -self.r1.y / det),
-                        Vector2::new(-self.r2.x / det, self.r1.x / det))
     }
 }
 
@@ -329,14 +334,14 @@ mod tests_matrix2x2 {
     #[should_panic]
     fn matrix_inverse_panic_for_det_0() {
         let matrix = Matrix2x2::new_idx(1f32, 1f32, 1f32, 1f32);
-        matrix.inverse();
+        matrix.inverse(0.001f32).unwrap();
     }
 
     #[test]
     fn matrix_inverse() {
         let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
         let expected = Matrix2x2::new_idx(-2f32, 1f32, 1.5f32, -0.5f32);
-        assert_eq!(expected, matrix.inverse());
+        assert_eq!(expected, matrix.inverse(0.001f32).unwrap());
     }
 }
 

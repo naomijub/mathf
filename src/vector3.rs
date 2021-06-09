@@ -1,3 +1,5 @@
+use crate::math_helper;
+
 use super::matrix::Matrix3x3 as M;
 use std::ops;
 
@@ -187,11 +189,13 @@ impl ops::Add<Vector3> for Point3 {
 
 #[allow(dead_code)]
 ///Vector3 linear indenpendency (3D)
-fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3) -> bool {
+fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3, delta: f32) -> bool {
     let dot1 = vec1.clone() * vec2.clone();
     let dot2 = vec1 * vec3.clone();
     let dot3 = vec3 * vec2;
-    dot1 == 0f32 && dot2 == 0f32 && dot3 == 0f32
+    math_helper::float_eq(dot1, 0f32, delta)
+        && math_helper::float_eq(dot2, 0f32, delta)
+        && math_helper::float_eq(dot3, 0f32, delta)
 }
 
 #[allow(dead_code)]
@@ -318,13 +322,13 @@ mod tests {
 
     #[test]
     fn veirfies_vectors_linearly_independent() {
-        let actual = lin_ind(Vector3::UP(), Vector3::RIGHT(), Vector3::FOWARD());
+        let actual = lin_ind(Vector3::UP(), Vector3::RIGHT(), Vector3::FOWARD(), 0.001f32);
         assert_eq!(actual, true);
     }
 
     #[test]
     fn veirfies_vectors_linearly_dependent() {
-        let actual = lin_ind(Vector3::UP(), Vector3::ONE(), Vector3::FOWARD());
+        let actual = lin_ind(Vector3::UP(), Vector3::ONE(), Vector3::FOWARD(), 0.001f32);
         assert_eq!(actual, false);
     }
 

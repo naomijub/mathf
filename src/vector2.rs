@@ -1,3 +1,5 @@
+use crate::math_helper;
+
 use super::matrix::Matrix2x2 as M;
 
 use std::ops;
@@ -10,7 +12,7 @@ pub struct Vector2 {
 }
 
 ///A 2D Point with x and y coordinates: Point2
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct Point2 {
     pub x: f32,
     pub y: f32,
@@ -158,8 +160,8 @@ impl ops::Add<Vector2> for Point2 {
 
 #[allow(dead_code)]
 ///Vector2 linear indenpendency (2D)
-fn lin_ind(vec1: Vector2, vec2: Vector2) -> bool {
-    vec1 * vec2 == 0f32
+fn lin_ind(vec1: Vector2, vec2: Vector2, delta: f32) -> bool {
+    math_helper::float_eq(vec1 * vec2, 0f32, delta)
 }
 
 #[allow(dead_code)]
@@ -277,13 +279,13 @@ mod tests {
 
     #[test]
     fn veirfies_vectors_linearly_independent() {
-        let actual = lin_ind(Vector2::UP(), Vector2::RIGHT());
+        let actual = lin_ind(Vector2::UP(), Vector2::RIGHT(), 0.001f32);
         assert_eq!(actual, true);
     }
 
     #[test]
     fn veirfies_vectors_linearly_dependent() {
-        let actual = lin_ind(Vector2::UP(), Vector2::ONE());
+        let actual = lin_ind(Vector2::UP(), Vector2::ONE(), 0.001f32);
         assert_eq!(actual, false);
     }
 
