@@ -1,13 +1,14 @@
 #[derive(Debug)]
 pub enum Error {
-    NonZeroDeterminantMatrix
+    NonZeroDeterminantMatrix,
 }
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::NonZeroDeterminantMatrix => write!(f, "Matrix determinant should be different from ZERO")
-            
+            Error::NonZeroDeterminantMatrix => {
+                write!(f, "Matrix determinant should be different from ZERO")
+            }
         }
     }
 }
@@ -15,7 +16,7 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {
     fn description(&self) -> &str {
         match self {
-            Error::NonZeroDeterminantMatrix => "Matrix determinant should be different from ZERO"
+            Error::NonZeroDeterminantMatrix => "Matrix determinant should be different from ZERO",
         }
     }
 

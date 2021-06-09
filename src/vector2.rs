@@ -21,50 +21,53 @@ pub struct Point2 {
 impl Vector2 {
     ///Instantiates a new vector with to be defined values of x and y;
     pub fn new(x: f32, y: f32) -> Vector2 {
-        Vector2 {x: x, y: y}
+        Vector2 { x: x, y: y }
     }
 
     #[allow(dead_code)]
     ///Instantiates a new Vector2 from 2 Point2 (initial position, final position).
     ///The new vector is created as final - initial (Points)
     pub fn diff(origin: Point2, destination: Point2) -> Vector2 {
-        Vector2 {x: destination.x - origin.x, y: destination.y - origin.y}
+        Vector2 {
+            x: destination.x - origin.x,
+            y: destination.y - origin.y,
+        }
     }
 
     #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with UP direction (y=1, x=0)
     pub fn UP() -> Vector2 {
-        Vector2 {x: 0f32, y: 1f32}
+        Vector2 { x: 0f32, y: 1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with DOWN direction (y=-1, x=0)
     pub fn DOWN() -> Vector2 {
-        Vector2 {x: 0f32, y: -1f32}
+        Vector2 { x: 0f32, y: -1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with RIGHT direction (y=0, x=1)
     pub fn RIGHT() -> Vector2 {
-        Vector2 {x: 1f32, y: 0f32}
+        Vector2 { x: 1f32, y: 0f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
     ///Defines a Vector with LEFT direction (y=0, x=-1)
     pub fn LEFT() -> Vector2 {
-        Vector2 {x: -1f32, y: 0f32}
+        Vector2 { x: -1f32, y: 0f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
     ///Defines a 2D Vector with x=1 and y=1
     pub fn ONE() -> Vector2 {
-        Vector2 {x: 1f32, y: 1f32}
+        Vector2 { x: 1f32, y: 1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
     ///Defines a Modulus ZERO Vector (x=0, y=0)
     pub fn ZERO() -> Vector2 {
-        Vector2 {x: 0f32, y: 0f32}
+        Vector2 { x: 0f32, y: 0f32 }
     }
 
     #[allow(dead_code)]
@@ -82,8 +85,7 @@ impl Vector2 {
     #[allow(dead_code)]
     ///Scales a Vector 2 in a non uniform way: (a, b * (x, y) = (ax, by)
     pub fn nonuniform_scale(self, a: f32, b: f32) -> Vector2 {
-        let scale_matrix = M::new(Vector2::new(a, 0f32),
-                                            Vector2::new(0f32, b));
+        let scale_matrix = M::new(Vector2::new(a, 0f32), Vector2::new(0f32, b));
         self.transform(scale_matrix, Vector2::ZERO())
     }
 }
@@ -93,7 +95,10 @@ impl ops::Add for Vector2 {
 
     ///Implements the Vector2 '+' trait
     fn add(self, new_vec: Vector2) -> Vector2 {
-        Vector2 {x: self.x + new_vec.x, y: self.y + new_vec.y}
+        Vector2 {
+            x: self.x + new_vec.x,
+            y: self.y + new_vec.y,
+        }
     }
 }
 
@@ -103,7 +108,10 @@ impl ops::Mul<f32> for Vector2 {
     ///Implements the scalar multiplication of a Vector2 with a f32. Other numbers should
     ///be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector2 {
-        Vector2 {x: self.x * value, y: self.y * value}
+        Vector2 {
+            x: self.x * value,
+            y: self.y * value,
+        }
     }
 }
 
@@ -121,14 +129,17 @@ impl ops::Sub for Vector2 {
 
     ///Implements the Vector2 '-' trait
     fn sub(self, new_vec: Vector2) -> Vector2 {
-        Vector2 {x: self.x - new_vec.x, y: self.y - new_vec.y}
+        Vector2 {
+            x: self.x - new_vec.x,
+            y: self.y - new_vec.y,
+        }
     }
 }
 
 impl Point2 {
     ///Instantiates a new Point2D with x and y.
     pub fn new(x: f32, y: f32) -> Point2 {
-        Point2 {x: x, y: y}
+        Point2 { x: x, y: y }
     }
 
     #[allow(dead_code)]
@@ -154,7 +165,10 @@ impl ops::Add<Vector2> for Point2 {
 
     ///Overloads + for Points and Vectors: P + PQ = Q
     fn add(self, new_vec: Vector2) -> Point2 {
-        Point2 {x: self.x + new_vec.x, y: self.y + new_vec.y}
+        Point2 {
+            x: self.x + new_vec.x,
+            y: self.y + new_vec.y,
+        }
     }
 }
 
@@ -187,21 +201,20 @@ mod tests {
     #[test]
     fn creates_vector2_with_parameters() {
         let actual = Vector2::new(1f32, 1f32);
-        let expected = Vector2 {x: 1f32, y: 1f32};
+        let expected = Vector2 { x: 1f32, y: 1f32 };
         assert_eq!(expected, actual);
     }
 
     #[test]
     fn creates_vector2_up() {
         let actual = Vector2::UP();
-        assert!(actual.x == 0f32 &&
-            actual.y == 1f32);
+        assert!(actual.x == 0f32 && actual.y == 1f32);
     }
 
     #[test]
     fn adds_right_and_left_vectors() {
-         let actual = Vector2::RIGHT() + Vector2::LEFT();
-         assert_eq!(actual.x, 0f32);
+        let actual = Vector2::RIGHT() + Vector2::LEFT();
+        assert_eq!(actual.x, 0f32);
     }
 
     #[test]
@@ -227,20 +240,20 @@ mod tests {
 
     #[test]
     fn magnitude_of_vector() {
-        let vec = Vector2 {x: 3f32, y: 4f32};
+        let vec = Vector2 { x: 3f32, y: 4f32 };
         assert_eq!(vec.magnitude(), 5f32);
     }
 
     #[test]
     fn magnitude_of_vector_is_positive() {
-        let vec = Vector2 {x: -3f32, y: 4f32};
+        let vec = Vector2 { x: -3f32, y: 4f32 };
         assert!(vec.magnitude() >= 0f32);
     }
 
     #[test]
     fn dot_product() {
-        let vec1 = Vector2 {x: 2f32, y: 1f32};
-        let vec2 = Vector2 {x: 1f32, y: 2f32};
+        let vec1 = Vector2 { x: 2f32, y: 1f32 };
+        let vec2 = Vector2 { x: 1f32, y: 2f32 };
         let actual = vec1 * vec2;
         let expected = 4f32;
         assert_eq!(actual, expected);
@@ -248,7 +261,7 @@ mod tests {
 
     #[test]
     fn constructs_vector2_from_points2() {
-        let vec = Vector2::diff(Point2 {x: 1f32, y: -1f32}, Point2 {x: 2f32, y: 3f32});
+        let vec = Vector2::diff(Point2 { x: 1f32, y: -1f32 }, Point2 { x: 2f32, y: 3f32 });
         assert_eq!(vec.x, 1f32);
         assert_eq!(vec.y, 4f32);
     }
@@ -256,7 +269,7 @@ mod tests {
     #[test]
     fn creates_point2_with_parameters() {
         let actual = Point2::new(1f32, 1f32);
-        let expected = Point2 {x: 1f32, y: 1f32};
+        let expected = Point2 { x: 1f32, y: 1f32 };
         assert_eq!(expected, actual);
     }
 
@@ -307,7 +320,10 @@ mod tests {
         let transform_matrix = M::new_idx(1f32, 2f32, 3f32, 4f32);
         let vec_transform_vec = Vector2::new(3f32, 4f32);
 
-        assert_eq!(Vector2::new(8f32, 15f32), vec.transform(transform_matrix, vec_transform_vec));
+        assert_eq!(
+            Vector2::new(8f32, 15f32),
+            vec.transform(transform_matrix, vec_transform_vec)
+        );
     }
 
     #[test]
