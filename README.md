@@ -1,8 +1,8 @@
 # mathf
 
-Math basics for a game frameworks and engines.
-[![Build Status](https://travis-ci.org/GodiStudios/mathf.svg)](https://travis-ci.org/GodiStudios/mathf)
+![Build Status](https://github.com/naomijub/mathf/actions/workflows/rust.yml/badge.svg)
 [![Crates.io](https://img.shields.io/crates/v/mathf.svg?style=flat-square)](https://crates.io/crates/mathf)
+**Math basics for a game frameworks and engines**
 
 ## Current Supported Features (ongoing):
 * 2D Vector
@@ -15,7 +15,7 @@ Math basics for a game frameworks and engines.
 * Ivan de Camargo, Geometria Analítica - Um tratamento Vetorial, Third Edition, Pearson
 
 ## Current TODO:
-- [ ] Matrix 3x3 Inverse
 - [ ] Vector Rotation
 - [ ] Quaternions
+- [ ] Matrix 3x3 Inverse
 - [ ] Linear Systems
