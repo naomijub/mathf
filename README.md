@@ -18,5 +18,6 @@
 ## Current TODO:
 - [ ] Vector Rotation
 - [ ] Quaternions
-- [ ] Matrix 3x3 Inverse
+- [x] Matrix 3x3 Inverse
 - [ ] Linear Systems
+- [ ] Examples

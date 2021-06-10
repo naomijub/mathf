@@ -72,7 +72,7 @@ impl Vector2 {
 
     #[allow(dead_code)]
     ///Vector magnitude: the square root of the sum of each vector part to the power of 2
-    pub fn magnitude(self) -> f32 {
+    pub fn magnitude(&self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
     }
 
@@ -111,6 +111,19 @@ impl ops::Mul<f32> for Vector2 {
         Vector2 {
             x: self.x * value,
             y: self.y * value,
+        }
+    }
+}
+
+impl ops::Div<f32> for Vector2 {
+    type Output = Vector2;
+
+    ///Implements the scalar division of a Vector2 with a f32. Other numbers should
+    ///be passed with 'i as f32'
+    fn div(self, value: f32) -> Vector2 {
+        Vector2 {
+            x: self.x / value,
+            y: self.y / value,
         }
     }
 }
@@ -192,6 +205,20 @@ fn dist(a: Point2, b: Point2) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
     let y_dist = (a.y - b.y).powi(2);
     (x_dist + y_dist).sqrt()
+}
+
+// Indexing
+use std::ops::Index;
+
+impl Index<usize> for Vector2 {
+    type Output = f32;
+    fn index(&self, s: usize) -> &f32 {
+        match s {
+            0 => &self.x,
+            1 => &self.y,
+            _ => panic!("Index out of bonds"),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -332,5 +359,27 @@ mod tests {
         let expected = Vector2::new(4f32, 3f32);
 
         assert_eq!(expected, vec.nonuniform_scale(4f32, 3f32));
+    }
+
+    #[test]
+    fn indexing_0_returns_x() {
+        let vector = Vector2::new(1f32, 2f32);
+
+        assert_eq!(vector[0usize], 1f32);
+    }
+
+    #[test]
+    fn indexing_1_returns_y() {
+        let vector = Vector2::new(1f32, 2f32);
+
+        assert_eq!(vector[1usize], 2f32);
+    }
+
+    #[test]
+    fn arithmetic() {
+        let v = Vector2::ONE();
+
+        assert_eq!(v.clone() / 2.0, Vector2::new(0.5f32, 0.5f32));
+        assert_eq!(v.clone() * 2.0, Vector2::new(2f32, 2f32));
     }
 }

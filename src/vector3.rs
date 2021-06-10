@@ -118,13 +118,13 @@ impl Vector3 {
     }
 
     ///Vector magnitude: the square root of the sum of each vector part to the power of 2
-    pub fn magnitude(self) -> f32 {
+    pub fn magnitude(&self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2) + self.z.powi(2))
     }
 
     #[allow(dead_code)]
-    ///Crooss product between two vectors 3.
-    pub fn x(self, vec: Vector3) -> Vector3 {
+    ///Cross product between two vectors 3.
+    pub fn x(&self, vec: Vector3) -> Vector3 {
         Vector3 {
             x: self.y * vec.z - self.z * vec.y,
             y: self.z * vec.x - self.x * vec.z,
@@ -134,7 +134,7 @@ impl Vector3 {
 
     #[allow(dead_code)]
     ///Transforms a Vector3 into a Vec<f32>
-    pub fn to_vector(self) -> Vec<f32> {
+    pub fn to_vector(&self) -> Vec<f32> {
         vec![self.x, self.y, self.z]
     }
 
@@ -179,6 +179,20 @@ impl ops::Mul<f32> for Vector3 {
             x: self.x * value,
             y: self.y * value,
             z: self.z * value,
+        }
+    }
+}
+
+impl ops::Div<f32> for Vector3 {
+    type Output = Vector3;
+
+    ///Implements the scalar division of a Vector3 with a f32. Other numbers should
+    ///be passed with 'i as f32'
+    fn div(self, value: f32) -> Vector3 {
+        Vector3 {
+            x: self.x / value,
+            y: self.y / value,
+            z: self.z / value,
         }
     }
 }
@@ -239,6 +253,21 @@ impl ops::Add<Vector3> for Point3 {
             x: self.x + new_vec.x,
             y: self.y + new_vec.y,
             z: self.z + new_vec.z,
+        }
+    }
+}
+
+// Indexing
+use std::ops::Index;
+
+impl Index<usize> for Vector3 {
+    type Output = f32;
+    fn index(&self, s: usize) -> &f32 {
+        match s {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("Index out of bonds"),
         }
     }
 }
@@ -446,5 +475,34 @@ mod tests {
         let expected = Vector3::new(1f32, 2f32, 3f32);
 
         assert_eq!(expected, vec.nonuniform_scale(1f32, 2f32, 3f32));
+    }
+
+    #[test]
+    fn indexing_0_returns_x() {
+        let vector = Vector3::new(1f32, 2f32, 3f32);
+
+        assert_eq!(vector[0usize], 1f32);
+    }
+
+    #[test]
+    fn indexing_1_returns_y() {
+        let vector = Vector3::new(1f32, 2f32, 3f32);
+
+        assert_eq!(vector[1usize], 2f32);
+    }
+
+    #[test]
+    fn indexing_2_returns_z() {
+        let vector = Vector3::new(1f32, 2f32, 3f32);
+
+        assert_eq!(vector[2usize], 3f32);
+    }
+
+    #[test]
+    fn arithmetic() {
+        let v = Vector3::ONE();
+
+        assert_eq!(v.clone() / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
+        assert_eq!(v.clone() * 2.0, Vector3::new(2f32, 2f32, 2f32));
     }
 }

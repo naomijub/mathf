@@ -1,5 +1,6 @@
 use crate::error::Error;
 use crate::math_helper;
+use crate::math_helper::float_eq;
 
 use super::vector2::Vector2;
 use super::vector3::Vector3;
@@ -55,7 +56,7 @@ impl Matrix3x3 {
     }
 
     ///Matrix 3x3 determinant
-    pub fn det(self) -> f32 {
+    pub fn det(&self) -> f32 {
         (self.r1.x * self.r2.y * self.r3.z
             + self.r1.y * self.r2.z * self.r3.x
             + self.r1.z * self.r2.x * self.r3.y)
@@ -65,12 +66,101 @@ impl Matrix3x3 {
     }
 
     ///Transforms a Matrix3x3 into a Vec<Vec<f32>>
-    pub fn vectorize(self) -> Vec<Vec<f32>> {
+    pub fn vectorize(&self) -> Vec<Vec<f32>> {
         vec![
             self.r1.to_vector(),
             self.r2.to_vector(),
             self.r3.to_vector(),
         ]
+    }
+
+    /// Modulus of a matrix 3x3
+    pub fn modulus(&self) -> f32 {
+        let elements: Vec<f32> = (0..=2)
+            .map(|i| {
+                let idxs: Vec<usize> = (0..=2).filter(|x| x != &i).collect();
+                let factor = self.r1[i];
+                let inner2x2 = Matrix2x2::new_idx(
+                    self.r2[idxs[0]],
+                    self.r2[idxs[1]],
+                    self.r3[idxs[0]],
+                    self.r3[idxs[1]],
+                );
+                factor * inner2x2.det()
+            })
+            .collect();
+        elements[0] - elements[1] + elements[2]
+    }
+
+    pub fn cofactor(&self) -> Matrix3x3 {
+        let elements1: Vec<f32> = (0..=2)
+            .map(|i| {
+                let idxs: Vec<usize> = (0..=2).filter(|x| x != &i).collect();
+                let inner2x2 = Matrix2x2::new_idx(
+                    self.r2[idxs[0]],
+                    self.r2[idxs[1]],
+                    self.r3[idxs[0]],
+                    self.r3[idxs[1]],
+                );
+                inner2x2.det()
+            })
+            .collect();
+
+        let elements2: Vec<f32> = (0..=2)
+            .map(|i| {
+                let idxs: Vec<usize> = (0..=2).filter(|x| x != &i).collect();
+                let inner2x2 = Matrix2x2::new_idx(
+                    self.r1[idxs[0]],
+                    self.r1[idxs[1]],
+                    self.r3[idxs[0]],
+                    self.r3[idxs[1]],
+                );
+                inner2x2.det()
+            })
+            .collect();
+
+        let elements3: Vec<f32> = (0..=2)
+            .map(|i| {
+                let idxs: Vec<usize> = (0..=2).filter(|x| x != &i).collect();
+                let inner2x2 = Matrix2x2::new_idx(
+                    self.r1[idxs[0]],
+                    self.r1[idxs[1]],
+                    self.r2[idxs[0]],
+                    self.r2[idxs[1]],
+                );
+                inner2x2.det()
+            })
+            .collect();
+        Matrix3x3::new_idx(
+            elements1[0],
+            -elements1[1],
+            elements1[2],
+            -elements2[0],
+            elements2[1],
+            -elements2[2],
+            elements3[0],
+            -elements3[1],
+            elements3[2],
+        )
+    }
+
+    /// Transpose of Matrix 3x3
+    pub fn transpose(&self) -> Matrix3x3 {
+        Matrix3x3::new_idx(
+            self.r1[0], self.r2[0], self.r3[0], self.r1[1], self.r2[1], self.r3[1], self.r1[2],
+            self.r2[2], self.r3[2],
+        )
+    }
+
+    /// Inverse of a Matrix 3x3
+    pub fn inverse(self, delta: f32) -> Result<Matrix3x3, Error> {
+        let modulus = self.modulus();
+        if float_eq(modulus, 0f32, delta) {
+            return Err(Error::SingularMatrixNotInversible);
+        }
+        let cofactor_matrix = self.cofactor();
+        let traspose = cofactor_matrix.transpose();
+        Ok(traspose / modulus)
     }
 }
 
@@ -178,6 +268,32 @@ impl ops::Mul<Matrix3x3> for f32 {
     }
 }
 
+impl ops::Div<f32> for Matrix3x3 {
+    type Output = Matrix3x3;
+
+    ///Implements the Matrix 3x3 '/' trait for `Matrix3x3 / f32` so that `(identity / value).det() == valueˆ3`.
+    fn div(self, value: f32) -> Matrix3x3 {
+        Matrix3x3::new(
+            Vector3::new(self.r1.x / value, self.r1.y / value, self.r1.z / value),
+            Vector3::new(self.r2.x / value, self.r2.y / value, self.r2.z / value),
+            Vector3::new(self.r3.x / value, self.r3.y / value, self.r3.z / value),
+        )
+    }
+}
+
+impl ops::Div<Matrix3x3> for f32 {
+    type Output = Matrix3x3;
+
+    ///Implements the Matrix 3x3 '/' trait for `Matrix3x3 / f32` so that `(value / identity).det() == valueˆ3` and `ßM == Mß`˜.
+    fn div(self, m: Matrix3x3) -> Matrix3x3 {
+        Matrix3x3::new(
+            Vector3::new(m.r1.x / self, m.r1.y / self, m.r1.z / self),
+            Vector3::new(m.r2.x / self, m.r2.y / self, m.r2.z / self),
+            Vector3::new(m.r3.x / self, m.r3.y / self, m.r3.z / self),
+        )
+    }
+}
+
 impl ops::Add for Matrix2x2 {
     type Output = Matrix2x2;
 
@@ -210,6 +326,30 @@ impl ops::Mul<Matrix2x2> for f32 {
         Matrix2x2::new(
             Vector2::new(m.r1.x * self, m.r1.y * self),
             Vector2::new(m.r2.x * self, m.r2.y * self),
+        )
+    }
+}
+
+impl ops::Div<f32> for Matrix2x2 {
+    type Output = Matrix2x2;
+
+    ///Implements the Matrix 2x2 '/' trait for `Matrix2x2 / f32` so that `(identity / value).det() == valueˆ2`.
+    fn div(self, value: f32) -> Matrix2x2 {
+        Matrix2x2::new(
+            Vector2::new(self.r1.x / value, self.r1.y / value),
+            Vector2::new(self.r2.x / value, self.r2.y / value),
+        )
+    }
+}
+
+impl ops::Div<Matrix2x2> for f32 {
+    type Output = Matrix2x2;
+
+    ///Implements the Matrix 2x2 '/' trait for `Matrix2x2 / f32` so that `(value / identity).det() == valueˆ2` and `ßM == Mß`˜.
+    fn div(self, m: Matrix2x2) -> Matrix2x2 {
+        Matrix2x2::new(
+            Vector2::new(m.r1.x / self, m.r1.y / self),
+            Vector2::new(m.r2.x / self, m.r2.y / self),
         )
     }
 }
@@ -392,5 +532,86 @@ mod tests_matrix_generation {
             vec![7f32, 8f32, 5f32],
         ];
         assert_eq!(expected, matrix.vectorize());
+    }
+}
+
+#[cfg(test)]
+mod tests_matrix3x3_inverse_functions {
+    use super::*;
+
+    #[test]
+    fn transpose() {
+        let matrix = Matrix3x3::new_idx(2f32, 2f32, 6f32, -1f32, -2f32, -5f32, -2f32, -2f32, -8f32);
+        let expected =
+            Matrix3x3::new_idx(2f32, -1f32, -2f32, 2f32, -2f32, -2f32, 6f32, -5f32, -8f32);
+
+        assert_eq!(matrix.transpose(), expected);
+    }
+
+    #[test]
+    fn cofactor() {
+        let matrix = Matrix3x3::new_idx(3f32, 1f32, -1f32, 2f32, -2f32, 0f32, 1f32, 2f32, -1f32);
+        let expected =
+            Matrix3x3::new_idx(2f32, 2f32, 6f32, -1f32, -2f32, -5f32, -2f32, -2f32, -8f32);
+
+        assert_eq!(matrix.cofactor(), expected);
+    }
+
+    #[test]
+    fn inverse() {
+        let matrix = Matrix3x3::new_idx(2f32, -1f32, 3f32, 1f32, 1f32, 1f32, 1f32, -1f32, 1f32);
+        let expected = Matrix3x3::new_idx(
+            -1f32, 1f32, 2f32, 0f32, 0.5f32, -0.5f32, 1f32, -0.5f32, -1.5f32,
+        );
+
+        assert_eq!(matrix.inverse(0.0001).unwrap(), expected);
+    }
+
+    #[test]
+    fn inverse_err() {
+        let matrix = Matrix3x3::new_idx(2f32, -1f32, 3f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32);
+
+        let err = matrix.inverse(0.0001).err().unwrap();
+        assert_eq!(err, Error::SingularMatrixNotInversible);
+    }
+
+    #[test]
+    fn modulus() {
+        let matrix = Matrix3x3::new_idx(2f32, -1f32, 3f32, 1f32, 1f32, 1f32, 1f32, -1f32, 1f32);
+
+        assert_eq!(matrix.modulus(), -2f32);
+    }
+}
+
+#[cfg(test)]
+mod test_arithmetic {
+    use super::*;
+
+    #[test]
+    fn maxtrix2x2() {
+        let matrix = Matrix2x2::IDENTITY();
+
+        assert_eq!(
+            matrix.clone() / 2f32,
+            Matrix2x2::new_idx(0.5, 0.0, 0.0, 0.5)
+        );
+        assert_eq!(
+            matrix.clone() * 2f32,
+            Matrix2x2::new_idx(2.0, 0.0, 0.0, 2.0)
+        );
+    }
+
+    #[test]
+    fn maxtrix3x3() {
+        let matrix = Matrix3x3::IDENTITY();
+
+        assert_eq!(
+            matrix.clone() / 2f32,
+            Matrix3x3::new_idx(0.5f32, 0f32, 0f32, 0f32, 0.5f32, 0f32, 0f32, 0f32, 0.5f32)
+        );
+        assert_eq!(
+            matrix.clone() * 2f32,
+            Matrix3x3::new_idx(2f32, 0f32, 0f32, 0f32, 2f32, 0f32, 0f32, 0f32, 2f32)
+        );
     }
 }
