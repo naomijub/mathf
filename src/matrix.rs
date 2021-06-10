@@ -281,19 +281,6 @@ impl ops::Div<f32> for Matrix3x3 {
     }
 }
 
-impl ops::Div<Matrix3x3> for f32 {
-    type Output = Matrix3x3;
-
-    ///Implements the Matrix 3x3 '/' trait for `Matrix3x3 / f32` so that `(value / identity).det() == valueˆ3` and `ßM == Mß`˜.
-    fn div(self, m: Matrix3x3) -> Matrix3x3 {
-        Matrix3x3::new(
-            Vector3::new(m.r1.x / self, m.r1.y / self, m.r1.z / self),
-            Vector3::new(m.r2.x / self, m.r2.y / self, m.r2.z / self),
-            Vector3::new(m.r3.x / self, m.r3.y / self, m.r3.z / self),
-        )
-    }
-}
-
 impl ops::Add for Matrix2x2 {
     type Output = Matrix2x2;
 
@@ -338,18 +325,6 @@ impl ops::Div<f32> for Matrix2x2 {
         Matrix2x2::new(
             Vector2::new(self.r1.x / value, self.r1.y / value),
             Vector2::new(self.r2.x / value, self.r2.y / value),
-        )
-    }
-}
-
-impl ops::Div<Matrix2x2> for f32 {
-    type Output = Matrix2x2;
-
-    ///Implements the Matrix 2x2 '/' trait for `Matrix2x2 / f32` so that `(value / identity).det() == valueˆ2` and `ßM == Mß`˜.
-    fn div(self, m: Matrix2x2) -> Matrix2x2 {
-        Matrix2x2::new(
-            Vector2::new(m.r1.x / self, m.r1.y / self),
-            Vector2::new(m.r2.x / self, m.r2.y / self),
         )
     }
 }
