@@ -654,6 +654,24 @@ mod tests_matrix3x3 {
     }
 
     #[test]
+    fn vector_transform_by_matrix_by_ref() {
+        let vec = Vector3::new(1f32, 2f32, 3f32);
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 9f32);
+        let actual = &matrix * &vec;
+        let expected = Vector3::new(14f32, 32f32, 50f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn vector_transform_by_matrix_by_ref_vec_only() {
+        let vec = Vector3::new(1f32, 2f32, 3f32);
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 9f32);
+        let actual = matrix * &vec;
+        let expected = Vector3::new(14f32, 32f32, 50f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
     fn seq_maxtrix_det() {
         let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
         let actual = matrix.det();
@@ -674,14 +692,32 @@ mod tests_matrix3x3 {
     }
 
     #[test]
+    fn identity_plus_identity_has_det_8_by_ref() {
+        let identities = &Matrix3x3::IDENTITY() + &Matrix3x3::IDENTITY();
+        assert_eq!(8f32, identities.det());
+    }
+
+    #[test]
     fn det_of_identity_times_3_is_27() {
         let identity_3 = Matrix3x3::IDENTITY() * 3f32;
         assert_eq!(27f32, identity_3.det());
     }
 
     #[test]
+    fn det_of_identity_times_3_is_27_by_ref() {
+        let identity_3 = &Matrix3x3::IDENTITY() * 3f32;
+        assert_eq!(27f32, identity_3.det());
+    }
+
+    #[test]
     fn det_of_4_times_identity_is_64() {
         let identity_4 = 4f32 * Matrix3x3::IDENTITY();
+        assert_eq!(64f32, identity_4.det());
+    }
+
+    #[test]
+    fn det_of_4_times_identity_is_64_by_ref() {
+        let identity_4 = 4f32 * &Matrix3x3::IDENTITY();
         assert_eq!(64f32, identity_4.det());
     }
 }
@@ -731,8 +767,20 @@ mod tests_matrix2x2 {
     }
 
     #[test]
+    fn identity_plus_identity_has_det_8_by_ref() {
+        let identities = &Matrix2x2::IDENTITY() + &Matrix2x2::IDENTITY();
+        assert_eq!(4f32, identities.det());
+    }
+
+    #[test]
     fn det_of_identity_times_3_is_9() {
         let identity_3 = Matrix2x2::IDENTITY() * 3f32;
+        assert_eq!(9f32, identity_3.det());
+    }
+
+    #[test]
+    fn det_of_identity_times_3_is_9_by_ref() {
+        let identity_3 = &Matrix2x2::IDENTITY() * 3f32;
         assert_eq!(9f32, identity_3.det());
     }
 
@@ -743,10 +791,34 @@ mod tests_matrix2x2 {
     }
 
     #[test]
+    fn det_of_4_times_identity_is_16_by_ref() {
+        let identity_4 = 4f32 * &Matrix2x2::IDENTITY();
+        assert_eq!(16f32, identity_4.det());
+    }
+
+    #[test]
     fn vector_transform_by_matrix() {
         let vec = Vector2::new(1f32, 2f32);
         let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
         let actual = matrix * vec;
+        let expected = Vector2::new(5f32, 11f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn vector_transform_by_matrix_by_ref() {
+        let vec = Vector2::new(1f32, 2f32);
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let actual = &matrix * &vec;
+        let expected = Vector2::new(5f32, 11f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn vector_transform_by_matrix_by_ref_vec_only() {
+        let vec = Vector2::new(1f32, 2f32);
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let actual = matrix * &vec;
         let expected = Vector2::new(5f32, 11f32);
         assert_eq!(expected, actual);
     }
@@ -872,6 +944,28 @@ mod test_arithmetic {
         );
         assert_eq!(
             matrix.clone() * 2f32,
+            Matrix3x3::new_idx(2f32, 0f32, 0f32, 0f32, 2f32, 0f32, 0f32, 0f32, 2f32)
+        );
+    }
+
+    #[test]
+    fn maxtrix2x2_by_ref() {
+        let matrix = Matrix2x2::IDENTITY();
+
+        assert_eq!(&matrix / 2f32, Matrix2x2::new_idx(0.5, 0.0, 0.0, 0.5));
+        assert_eq!(&matrix * 2f32, Matrix2x2::new_idx(2.0, 0.0, 0.0, 2.0));
+    }
+
+    #[test]
+    fn maxtrix3x3_by_ref() {
+        let matrix = Matrix3x3::IDENTITY();
+
+        assert_eq!(
+            &matrix / 2f32,
+            Matrix3x3::new_idx(0.5f32, 0f32, 0f32, 0f32, 0.5f32, 0f32, 0f32, 0f32, 0.5f32)
+        );
+        assert_eq!(
+            &matrix * 2f32,
             Matrix3x3::new_idx(2f32, 0f32, 0f32, 0f32, 2f32, 0f32, 0f32, 0f32, 2f32)
         );
     }
