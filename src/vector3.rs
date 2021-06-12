@@ -624,6 +624,18 @@ mod tests {
     }
 
     #[test]
+    fn transform_point3_to_another_space_point3() {
+        let vec = Point3::new(1f32, 2f32, 3f32);
+        let transform_matrix = M::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let vec_transform_vec = Vector3::new(3f32, 4f32, 6f32);
+
+        assert_eq!(
+            Point3::new(17f32, 36f32, 44f32),
+            vec.transform(transform_matrix, vec_transform_vec)
+        );
+    }
+
+    #[test]
     fn nonuniform_scale_by_1_2_3() {
         let vec = Vector3::ONE();
         let expected = Vector3::new(1f32, 2f32, 3f32);
