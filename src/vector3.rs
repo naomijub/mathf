@@ -28,7 +28,7 @@ impl Vector3 {
 
     ///Instantiates a new Vector3 from 2 Point3 (initial position, final position).
     ///The new vector is created as final - initial (Points)
-    pub fn diff(origin: Point3, destination: Point3) -> Vector3 {
+    pub fn diff(origin: Point3, destination: &Point3) -> Vector3 {
         Vector3 {
             x: destination.x - origin.x,
             y: destination.y - origin.y,
@@ -314,7 +314,7 @@ impl Point3 {
     }
 
     ///Creates a new Vector3 relative to position (0, 0, 0)
-    pub fn to_vec(self) -> Vector3 {
+    pub fn to_vec(&self) -> Vector3 {
         Vector3::diff(Point3::origin(), self)
     }
 
@@ -328,6 +328,12 @@ impl Point3 {
     fn ONE() -> Point3 {
         Point3::new(1f32, 1f32, 1f32)
     }
+
+    ///Transforms a Point 3 from one vectorspace to another  via a matrix3x3 transform.
+    /// Same as Point2 but with Point3, Matrix3x3 and Vector3.
+    pub fn transform(&self, m: M, vec: Vector3) -> Point3 {
+        (m * self) + vec
+    }
 }
 
 impl ops::Add<Vector3> for Point3 {
@@ -340,6 +346,22 @@ impl ops::Add<Vector3> for Point3 {
             y: self.y + new_vec.y,
             z: self.z + new_vec.z,
         }
+    }
+}
+
+impl ops::Mul<&Point3> for &Vector3 {
+    type Output = f32;
+
+    ///Implements the dot product of &Point3 and &Vector3 as '*'.
+    fn mul(self, new_vec: &Point3) -> f32 {
+        self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
+    }
+}
+
+impl PartialEq<Vector3> for Point3 {
+    fn eq(&self, other: &Vector3) -> bool {
+        let to_vec = self.to_vec();
+        to_vec.x == other.x && to_vec.y == other.y && to_vec.z == other.z
     }
 }
 
@@ -507,7 +529,7 @@ mod tests {
     fn constructs_vector3_from_points3() {
         let vec = Vector3::diff(
             Point3::new(1f32, -1f32, 2f32),
-            Point3::new(2f32, 3f32, 2f32),
+            &Point3::new(2f32, 3f32, 2f32),
         );
         assert_eq!(vec.x, 1f32);
         assert_eq!(vec.y, 4f32);
@@ -602,6 +624,18 @@ mod tests {
     }
 
     #[test]
+    fn transform_point3_to_another_space_point3() {
+        let vec = Point3::new(1f32, 2f32, 3f32);
+        let transform_matrix = M::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let vec_transform_vec = Vector3::new(3f32, 4f32, 6f32);
+
+        assert_eq!(
+            Point3::new(17f32, 36f32, 44f32),
+            vec.transform(transform_matrix, vec_transform_vec)
+        );
+    }
+
+    #[test]
     fn nonuniform_scale_by_1_2_3() {
         let vec = Vector3::ONE();
         let expected = Vector3::new(1f32, 2f32, 3f32);
@@ -644,5 +678,37 @@ mod tests {
 
         assert_eq!(&v / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
         assert_eq!(&v * 2.0, Vector3::new(2f32, 2f32, 2f32));
+    }
+
+    #[test]
+    fn dot_product_point() {
+        let point = Point3 {
+            x: 2f32,
+            y: 1f32,
+            z: 2f32,
+        };
+        let vec = Vector3 {
+            x: 1f32,
+            y: 2f32,
+            z: 3f32,
+        };
+        let actual = &vec * &point;
+        let expected = 10f32;
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn point_vec_eq() {
+        let point = Point3 {
+            x: 1f32,
+            y: 2f32,
+            z: 3f32,
+        };
+        let vec = Vector3 {
+            x: 1f32,
+            y: 2f32,
+            z: 3f32,
+        };
+        assert_eq!(point, vec);
     }
 }

@@ -254,6 +254,22 @@ impl Point2 {
     fn ONE() -> Point2 {
         Point2::new(1f32, 1f32)
     }
+
+    /// Transforms a Point2 2 from one vectorspace to another via a matrix2x2 transform
+    /// `| 3 1 |   | 4 |   | 5 |   | 20 |`
+    /// `| 5 7 | * | 3 | + | 6 | = | 47 |`
+    /// ```
+    /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector, Point2}};
+    /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);
+    /// let point    = Point2::new(4.0, 3.0);
+    /// let offset = Vector2::new(5.0, 6.0);
+    /// let exp    = Point2::new(20.0, 47.0);
+    ///
+    /// assert_eq!(point.transform(matrix, offset), exp);
+    /// ```
+    pub fn transform(&self, m: M, vec: Vector2) -> Point2 {
+        (m * self) + vec
+    }
 }
 
 impl ops::Add<Vector2> for Point2 {
@@ -265,6 +281,22 @@ impl ops::Add<Vector2> for Point2 {
             x: self.x + new_vec.x,
             y: self.y + new_vec.y,
         }
+    }
+}
+
+impl ops::Mul<&Point2> for &Vector2 {
+    type Output = f32;
+
+    ///Implements the dot product of &Point2 and &Vector2 as '*'.
+    fn mul(self, new_vec: &Point2) -> f32 {
+        self.x * new_vec.x + self.y * new_vec.y
+    }
+}
+
+impl PartialEq<Vector2> for Point2 {
+    fn eq(&self, other: &Vector2) -> bool {
+        let to_vec = self.to_vec();
+        to_vec.x == other.x && to_vec.y == other.y
     }
 }
 
@@ -460,7 +492,7 @@ mod tests {
     }
 
     #[test]
-    fn transform_vector3_to_another_space_vector3() {
+    fn transform_vector2_to_another_space_vector2() {
         let vec = Vector2::new(1f32, 2f32);
         let transform_matrix = M::new_idx(1f32, 2f32, 3f32, 4f32);
         let vec_transform_vec = Vector2::new(3f32, 4f32);
@@ -507,5 +539,24 @@ mod tests {
 
         assert_eq!(&v / 2.0, Vector2::new(0.5f32, 0.5f32));
         assert_eq!(&v * 2.0, Vector2::new(2f32, 2f32));
+    }
+
+    #[test]
+    fn transform_point2_to_another_space_point2() {
+        let point = Point2::new(1f32, 2f32);
+        let transform_matrix = M::new_idx(1f32, 2f32, 3f32, 4f32);
+        let vec_transform_vec = Vector2::new(3f32, 4f32);
+
+        assert_eq!(
+            Point2::new(8f32, 15f32),
+            point.transform(transform_matrix, vec_transform_vec)
+        );
+    }
+
+    #[test]
+    fn point_vec_eq() {
+        let point = Point2 { x: 1f32, y: 2f32 };
+        let vec = Vector2 { x: 1f32, y: 2f32 };
+        assert_eq!(point, vec);
     }
 }

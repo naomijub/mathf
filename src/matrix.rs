@@ -2,6 +2,8 @@ use crate::error::Error;
 use crate::math_helper;
 use crate::math_helper::float_eq;
 use crate::vector::Vector;
+use crate::vector2::Point2;
+use crate::vector3::Point3;
 
 use super::vector2::Vector2;
 use super::vector3::Vector3;
@@ -363,7 +365,7 @@ impl ops::Mul<Vector3> for Matrix3x3 {
     type Output = Vector3;
 
     ///Implements the transform matrix of a vector 3 into another vector 3.
-    /// The order should be matrix * vector becaus of 3x3 * 3x1 = 3x1
+    /// The order should be matrix * vector   because of 3x3 * 3x1 = 3x1
     fn mul(self, vec: Vector3) -> Vector3 {
         Vector3 {
             x: &self.r1 * &vec,
@@ -377,7 +379,7 @@ impl ops::Mul<&Vector3> for Matrix3x3 {
     type Output = Vector3;
 
     ///Implements the transform matrix of a vector 3 into another vector 3.
-    /// The order should be matrix * vector becaus of 3x3 * 3x1 = 3x1
+    /// The order should be matrix * vector   because of 3x3 * 3x1 = 3x1
     fn mul(self, vec: &Vector3) -> Vector3 {
         Vector3 {
             x: &self.r1 * vec,
@@ -391,9 +393,37 @@ impl ops::Mul<&Vector3> for &Matrix3x3 {
     type Output = Vector3;
 
     ///Implements the transform matrix of a vector 3 into another vector 3.
-    /// The order should be matrix * vector becaus of 3x3 * 3x1 = 3x1
+    /// The order should be matrix * vector   because of 3x3 * 3x1 = 3x1
     fn mul(self, vec: &Vector3) -> Vector3 {
         Vector3 {
+            x: &self.r1 * vec,
+            y: &self.r2 * vec,
+            z: &self.r3 * vec,
+        }
+    }
+}
+
+impl ops::Mul<&Point3> for Matrix3x3 {
+    type Output = Point3;
+
+    ///Implements the transform matrix of a point 3 into another point 3.
+    /// The order should be matrix * point  because of 3x3 * 3x1 = 3x1
+    fn mul(self, vec: &Point3) -> Point3 {
+        Point3 {
+            x: &self.r1 * vec,
+            y: &self.r2 * vec,
+            z: &self.r3 * vec,
+        }
+    }
+}
+
+impl ops::Mul<&Point3> for &Matrix3x3 {
+    type Output = Point3;
+
+    ///Implements the transform matrix of a point 3 into another point 3.
+    /// The order should be matrix * point  because of 3x3 * 3x1 = 3x1
+    fn mul(self, vec: &Point3) -> Point3 {
+        Point3 {
             x: &self.r1 * vec,
             y: &self.r2 * vec,
             z: &self.r3 * vec,
@@ -579,7 +609,7 @@ impl ops::Mul<Vector2> for Matrix2x2 {
     type Output = Vector2;
 
     ///Implements the transform matrix of a vector 2 into another vector 2.
-    /// The order should be matrix * vector becaus of 2x2 * 2x1 = 2x1
+    /// The order should be matrix * vector   because of 2x2 * 2x1 = 2x1
     fn mul(self, vec: Vector2) -> Vector2 {
         Vector2 {
             x: &self.r1 * &vec,
@@ -592,7 +622,7 @@ impl ops::Mul<&Vector2> for Matrix2x2 {
     type Output = Vector2;
 
     ///Implements the transform matrix of a vector 2 into another vector 2.
-    /// The order should be matrix * &vector becaus of 2x2 * 2x1 = 2x1
+    /// The order should be matrix * &vector   because of 2x2 * 2x1 = 2x1
     fn mul(self, vec: &Vector2) -> Vector2 {
         Vector2 {
             x: &self.r1 * vec,
@@ -605,9 +635,35 @@ impl ops::Mul<&Vector2> for &Matrix2x2 {
     type Output = Vector2;
 
     ///Implements the transform matrix of a vector 2 into another vector 2.
-    /// The order should be matrix * vector becaus of 2x2 * 2x1 = 2x1
+    /// The order should be matrix * vector   because of 2x2 * 2x1 = 2x1
     fn mul(self, vec: &Vector2) -> Vector2 {
         Vector2 {
+            x: &self.r1 * vec,
+            y: &self.r2 * vec,
+        }
+    }
+}
+
+impl ops::Mul<&Point2> for Matrix2x2 {
+    type Output = Point2;
+
+    ///Implements the transform matrix of a vector 2 into another vector 2.
+    /// The order should be matrix * &point   because of 2x2 * 2x1 = 2x1
+    fn mul(self, vec: &Point2) -> Point2 {
+        Point2 {
+            x: &self.r1 * vec,
+            y: &self.r2 * vec,
+        }
+    }
+}
+
+impl ops::Mul<&Point2> for &Matrix2x2 {
+    type Output = Point2;
+
+    ///Implements the transform matrix of a point 2 into another point 2.
+    /// The order should be matrix * point   because of 2x2 * 2x1 = 2x1
+    fn mul(self, vec: &Point2) -> Point2 {
+        Point2 {
             x: &self.r1 * vec,
             y: &self.r2 * vec,
         }
@@ -650,6 +706,15 @@ mod tests_matrix3x3 {
         let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 9f32);
         let actual = matrix * vec;
         let expected = Vector3::new(14f32, 32f32, 50f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn point_transform_by_matrix() {
+        let point = Point3::new(1f32, 2f32, 3f32);
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 9f32);
+        let actual = &matrix * &point;
+        let expected = Point3::new(14f32, 32f32, 50f32);
         assert_eq!(expected, actual);
     }
 
@@ -811,6 +876,15 @@ mod tests_matrix2x2 {
         let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
         let actual = &matrix * &vec;
         let expected = Vector2::new(5f32, 11f32);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn point_transform_by_matrix() {
+        let point = Point2::new(1f32, 2f32);
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let actual = &matrix * &point;
+        let expected = Point2::new(5f32, 11f32);
         assert_eq!(expected, actual);
     }
 
