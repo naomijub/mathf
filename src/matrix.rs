@@ -1,6 +1,7 @@
 use crate::error::Error;
 use crate::math_helper;
 use crate::math_helper::float_eq;
+use crate::vector::Vector;
 
 use super::vector2::Vector2;
 use super::vector3::Vector3;

@@ -1,4 +1,5 @@
 use crate::math_helper;
+use crate::vector::Vector;
 
 use super::matrix::Matrix2x2 as M;
 
@@ -24,7 +25,6 @@ impl Vector2 {
         Vector2 { x: x, y: y }
     }
 
-    #[allow(dead_code)]
     ///Instantiates a new Vector2 from 2 Point2 (initial position, final position).
     ///The new vector is created as final - initial (Points)
     pub fn diff(origin: Point2, destination: Point2) -> Vector2 {
@@ -58,41 +58,39 @@ impl Vector2 {
         Vector2 { x: -1f32, y: 0f32 }
     }
 
-    #[allow(dead_code, non_snake_case)]
-    ///Defines a 2D Vector with x=1 and y=1
-    pub fn ONE() -> Vector2 {
-        Vector2 { x: 1f32, y: 1f32 }
-    }
-
-    #[allow(dead_code, non_snake_case)]
-    ///Defines a Modulus ZERO Vector (x=0, y=0)
-    pub fn ZERO() -> Vector2 {
-        Vector2 { x: 0f32, y: 0f32 }
-    }
-
-    #[allow(dead_code)]
-    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
-    pub fn magnitude(&self) -> f32 {
-        f32::sqrt(self.x.powi(2) + self.y.powi(2))
-    }
-
-    #[allow(dead_code)]
-    ///Transforms a Vector2 into a Vec<f32>
-    pub fn to_vector(&self) -> Vec<f32> {
-        vec![self.x, self.y]
-    }
-
-    #[allow(dead_code)]
     ///Transforms a Vector 2 from one vectorspace to another via a matrix2x2 transform
     pub fn transform(self, m: M, vec: Vector2) -> Vector2 {
         (m * self) + vec
     }
 
-    #[allow(dead_code)]
     ///Scales a Vector 2 in a non uniform way: (a, b * (x, y) = (ax, by)
     pub fn nonuniform_scale(self, a: f32, b: f32) -> Vector2 {
         let scale_matrix = M::new(Vector2::new(a, 0f32), Vector2::new(0f32, b));
         self.transform(scale_matrix, Vector2::ZERO())
+    }
+}
+
+impl Vector for Vector2 {
+    #[allow(dead_code, non_snake_case)]
+    ///Defines a 2D Vector with x=1 and y=1
+    fn ONE() -> Vector2 {
+        Vector2 { x: 1f32, y: 1f32 }
+    }
+
+    #[allow(dead_code, non_snake_case)]
+    ///Defines a Modulus ZERO Vector (x=0, y=0)
+    fn ZERO() -> Vector2 {
+        Vector2 { x: 0f32, y: 0f32 }
+    }
+
+    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
+    fn magnitude(&self) -> f32 {
+        f32::sqrt(self.x.powi(2) + self.y.powi(2))
+    }
+
+    ///Transforms a Vector2 into a Vec<f32>
+    fn to_vector(&self) -> Vec<f32> {
+        vec![self.x, self.y]
     }
 }
 
@@ -161,7 +159,6 @@ impl Point2 {
         Point2 { x: x, y: y }
     }
 
-    #[allow(dead_code)]
     ///Creates a new Vector2 relative to position (0, 0)
     pub fn to_vec(self) -> Vector2 {
         Vector2::diff(Point2::origin(), self)
@@ -193,21 +190,28 @@ impl ops::Add<Vector2> for Point2 {
 
 #[allow(dead_code)]
 ///Vector2 linear indenpendency (2D)
-fn lin_ind(vec1: Vector2, vec2: Vector2, delta: f32) -> bool {
+pub fn lin_ind(vec1: Vector2, vec2: Vector2, delta: f32) -> bool {
     math_helper::float_eq(vec1 * vec2, 0f32, delta)
 }
 
 #[allow(dead_code)]
 /// Cos between two vector2
-fn cos(vec1: Vector2, vec2: Vector2) -> f32 {
+pub fn cos(vec1: Vector2, vec2: Vector2) -> f32 {
     let dot_product = vec1.clone() * vec2.clone();
     let denominator = vec1.magnitude() * vec2.magnitude();
     dot_product / denominator
 }
 
 #[allow(dead_code)]
+/// Sin between two vector2
+pub fn sin(vec1: Vector2, vec2: Vector2) -> f32 {
+    let cos = cos(vec1, vec2);
+    (1f32 - cos.powi(2)).sqrt()
+}
+
+#[allow(dead_code)]
 ///Distance between 2 point2
-fn dist(a: Point2, b: Point2) -> f32 {
+pub fn dist(a: Point2, b: Point2) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
     let y_dist = (a.y - b.y).powi(2);
     (x_dist + y_dist).sqrt()
@@ -340,6 +344,13 @@ mod tests {
         let vec1 = Vector2::new(4f32, 3f32);
         let vec2 = Vector2::new(3f32, 4f32);
         assert_eq!(0.96f32, cos(vec1, vec2));
+    }
+
+    #[test]
+    fn verifies_sin_between_vecs() {
+        let vec1 = Vector2::new(4f32, 3f32);
+        let vec2 = Vector2::new(3f32, 4f32);
+        assert_eq!(0.28000003f32, sin(vec1, vec2));
     }
 
     #[test]
