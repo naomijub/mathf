@@ -1,4 +1,5 @@
 use crate::math_helper;
+use crate::vector::Vector;
 
 use super::matrix::Matrix3x3 as M;
 use std::ops;
@@ -20,13 +21,11 @@ pub struct Point3 {
 }
 
 impl Vector3 {
-    #[allow(dead_code)]
     ///Instantiates a new vector with to be defined values of x, y, z;
     pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
         Vector3 { x: x, y: y, z: z }
     }
 
-    #[allow(dead_code)]
     ///Instantiates a new Vector3 from 2 Point3 (initial position, final position).
     ///The new vector is created as final - initial (Points)
     pub fn diff(origin: Point3, destination: Point3) -> Vector3 {
@@ -38,7 +37,10 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with UP direction (y=1, x=0, z=0)
+    /// | 0 |
+    /// | 1 |
+    /// | 0 |
+    /// y=1, x=0, z=0
     pub fn UP() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -48,7 +50,10 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with DOWN direction (y=-1, x=0, z=0)
+    /// |  0 |
+    /// | -1 |
+    /// |  0 |
+    /// y=-1, x=0, z=0
     pub fn DOWN() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -58,7 +63,10 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with RIGHT direction (y=0, x=1, z=0)
+    /// | 1 |
+    /// | 0 |
+    /// | 0 |
+    /// y=0, x=1, z=0
     pub fn RIGHT() -> Vector3 {
         Vector3 {
             x: 1f32,
@@ -68,7 +76,10 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with LEFT direction (y=0, x=-1, z=0)
+    /// | -1 |
+    /// |  0 |
+    /// |  0 |
+    /// y=0, x=-1, z=0
     pub fn LEFT() -> Vector3 {
         Vector3 {
             x: -1f32,
@@ -78,7 +89,10 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with FOWARD direction (y=0, x=0, z=1)
+    /// | 0 |
+    /// | 0 |
+    /// | 1 |
+    /// y=0, x=0, z=1
     pub fn FOWARD() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -88,7 +102,10 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with BACK direction (y=0, x=0, z=-1)
+    /// |  0 |
+    /// |  0 |
+    /// | -1 |
+    /// y=0, x=0, z=-1
     pub fn BACK() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -97,33 +114,16 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
-    ///Defines a 3D Vector with x=1, y=1, z=1
-    pub fn ONE() -> Vector3 {
-        Vector3 {
-            x: 1f32,
-            y: 1f32,
-            z: 1f32,
-        }
+    ///Transforms a Vector 3 from one vectorspace to another  via a matrix3x3 transform.
+    /// Same as Vector2 but with Matrix3x3 and Vector3.
+    pub fn transform(self, m: M, vec: Vector3) -> Vector3 {
+        (m * self) + vec
     }
 
-    #[allow(dead_code, non_snake_case)]
-    ///Defines a Modulus ZERO Vector (x=0, y=0, z=0)
-    pub fn ZERO() -> Vector3 {
-        Vector3 {
-            x: 0f32,
-            y: 0f32,
-            z: 0f32,
-        }
-    }
-
-    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
-    pub fn magnitude(&self) -> f32 {
-        f32::sqrt(self.x.powi(2) + self.y.powi(2) + self.z.powi(2))
-    }
-
-    #[allow(dead_code)]
     ///Cross product between two vectors 3.
+    /// | a |   | m |   | do - gn |
+    /// | d | x | n | = | gm - ao |
+    /// | g |   | o |   | an - dm |
     pub fn x(&self, vec: Vector3) -> Vector3 {
         Vector3 {
             x: self.y * vec.z - self.z * vec.y,
@@ -132,19 +132,6 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code)]
-    ///Transforms a Vector3 into a Vec<f32>
-    pub fn to_vector(&self) -> Vec<f32> {
-        vec![self.x, self.y, self.z]
-    }
-
-    #[allow(dead_code)]
-    ///Transforms a Vector 3 from one vectorspace to another  via a matrix3x3 transform
-    pub fn transform(self, m: M, vec: Vector3) -> Vector3 {
-        (m * self) + vec
-    }
-
-    #[allow(dead_code)]
     ///Scales a Vector 3 in a non uniform way: (a, b, c) * (x, y, z) = (ax, by, cz)
     pub fn nonuniform_scale(self, a: f32, b: f32, c: f32) -> Vector3 {
         let scale_matrix = M::new(
@@ -153,6 +140,44 @@ impl Vector3 {
             Vector3::new(0f32, 0f32, c),
         );
         self.transform(scale_matrix, Vector3::ZERO())
+    }
+}
+
+impl Vector for Vector3 {
+    #[allow(dead_code, non_snake_case)]
+    /// | 1 |
+    /// | 1 |
+    /// | 1 |
+    ///x=1, y=1, z=1
+    fn ONE() -> Vector3 {
+        Vector3 {
+            x: 1f32,
+            y: 1f32,
+            z: 1f32,
+        }
+    }
+
+    #[allow(dead_code, non_snake_case)]
+    /// | 0 |
+    /// | 0 |
+    /// | 0 |
+    ///Defines a Modulus ZERO Vector (x=0, y=0, z=0)
+    fn ZERO() -> Vector3 {
+        Vector3 {
+            x: 0f32,
+            y: 0f32,
+            z: 0f32,
+        }
+    }
+
+    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
+    fn magnitude(&self) -> f32 {
+        f32::sqrt(self.x.powi(2) + self.y.powi(2) + self.z.powi(2))
+    }
+
+    ///Transforms a Vector3 into a Vec<f32>
+    fn to_vector(&self) -> Vec<f32> {
+        vec![self.x, self.y, self.z]
     }
 }
 
@@ -225,13 +250,11 @@ impl Point3 {
         Point3 { x: x, y: y, z: z }
     }
 
-    #[allow(dead_code)]
     ///Creates a new Vector3 relative to position (0, 0, 0)
     pub fn to_vec(self) -> Vector3 {
         Vector3::diff(Point3::origin(), self)
     }
 
-    #[allow(dead_code)]
     ///Instantiates a Point3 with (0, 0, 0)
     fn origin() -> Point3 {
         Point3::new(0f32, 0f32, 0f32)
@@ -274,7 +297,7 @@ impl Index<usize> for Vector3 {
 
 #[allow(dead_code)]
 ///Vector3 linear indenpendency (3D)
-fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3, delta: f32) -> bool {
+pub fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3, delta: f32) -> bool {
     let dot1 = vec1.clone() * vec2.clone();
     let dot2 = vec1 * vec3.clone();
     let dot3 = vec3 * vec2;
@@ -285,15 +308,22 @@ fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3, delta: f32) -> bool {
 
 #[allow(dead_code)]
 /// Cos between two vector3
-fn cos(vec1: Vector3, vec2: Vector3) -> f32 {
+pub fn cos(vec1: Vector3, vec2: Vector3) -> f32 {
     let dot_product = vec1.clone() * vec2.clone();
     let denominator = vec1.magnitude() * vec2.magnitude();
     dot_product / denominator
 }
 
 #[allow(dead_code)]
+/// Sin between two vector3
+pub fn sin(vec1: Vector3, vec2: Vector3) -> f32 {
+    let cos = cos(vec1, vec2);
+    (1f32 - cos.powi(2)).sqrt()
+}
+
+#[allow(dead_code)]
 ///Distance between 2 point3
-fn dist(a: Point3, b: Point3) -> f32 {
+pub fn dist(a: Point3, b: Point3) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
     let y_dist = (a.y - b.y).powi(2);
     let z_dist = (a.z - b.z).powi(2);
@@ -442,6 +472,13 @@ mod tests {
         let vec1 = Vector3::new(4f32, 3f32, 5f32);
         let vec2 = Vector3::new(3f32, 4f32, 5f32);
         assert_eq!(0.98f32, cos(vec1, vec2));
+    }
+
+    #[test]
+    fn verifies_sin_between_vecs() {
+        let vec1 = Vector3::new(4f32, 3f32, 5f32);
+        let vec2 = Vector3::new(3f32, 4f32, 5f32);
+        assert_eq!(0.19899738f32, sin(vec1, vec2));
     }
 
     #[test]
