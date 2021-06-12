@@ -24,23 +24,41 @@ pub struct Matrix2x2 {
 
 pub trait Matrix {
     #[allow(non_snake_case)]
+    /// Identity Matrrix NxN, where all elements Uij that i = j are `1`
     fn IDENTITY() -> Self;
+    ///Matrix NxN determinant
     fn det(&self) -> f32;
+    ///Transforms a MatrixNxN into a Vec<Vec<f32>> by row
     fn vectorize(&self) -> Vec<Vec<f32>>;
     fn modulus(&self) -> f32;
+    /// Transpose of Matrix NxN.
+    /// Transpose switches rows and columns
     fn transpose(&self) -> Self;
+    /// Inverse of a Matrix NxN
     fn inverse(self, delta: f32) -> Result<Self, Error>
     where
         Self: Sized;
 }
 
 impl Matrix for Matrix3x3 {
-    /// Identity Matrrix 3x3, where all elements Uij that i = j are `1`
+    /// | 1 0 0 |
+    /// | 0 1 0 |
+    /// | 0 0 1 |
     fn IDENTITY() -> Self {
         Matrix3x3::new_idx(1f32, 0f32, 0f32, 0f32, 1f32, 0f32, 0f32, 0f32, 1f32)
     }
 
-    ///Matrix 3x3 determinant
+    /// `               | 4 -3 0 |`
+    /// `let matrix =   | 2 -1 2 |`
+    /// `               | 1  5 7 |`
+    /// `matrix.det() = -32`
+    ///
+    /// ```
+    /// use mathf::matrix::{Matrix, Matrix3x3};
+    ///
+    /// let matrix = Matrix3x3::new_idx(4.0, -3.0, 0.0, 2.0, -1.0, 2.0, 1.0,  5.0, 7.0);
+    /// assert_eq!(matrix.det(), -32f32);
+    /// ```
     fn det(&self) -> f32 {
         (self.r1.x * self.r2.y * self.r3.z
             + self.r1.y * self.r2.z * self.r3.x
@@ -50,7 +68,14 @@ impl Matrix for Matrix3x3 {
                 + self.r1.x * self.r2.z * self.r3.y)
     }
 
-    ///Transforms a Matrix3x3 into a Vec<Vec<f32>> by row
+    /// ```
+    /// use mathf::matrix::{Matrix, Matrix3x3};
+    ///
+    /// let matrix = Matrix3x3::new_idx(4.0, -3.0, 0.0, 2.0, -1.0, 2.0, 1.0,  5.0, 7.0);
+    /// assert_eq!(matrix.vectorize(), vec![
+    ///    vec![4.0, -3.0, 0.0], vec![2.0, -1.0, 2.0], vec![1.0,  5.0, 7.0]
+    /// ]);
+    /// ```
     fn vectorize(&self) -> Vec<Vec<f32>> {
         vec![
             self.r1.to_vector(),
@@ -60,6 +85,12 @@ impl Matrix for Matrix3x3 {
     }
 
     /// Modulus of a matrix 3x3
+    ///                | 4 -3 0 |
+    /// let matrix =   | 2 -1 2 |
+    ///                | 1  5 7 |
+    /// matrix.modulus() =
+    /// -> 4 | -1 2 | - (-3) | 2 2 | + | 2 -1 |
+    ///      |  5 7 |        | 1 7 |   | 1  5 |
     fn modulus(&self) -> f32 {
         let elements: Vec<f32> = (0..=2)
             .map(|i| {
@@ -77,7 +108,6 @@ impl Matrix for Matrix3x3 {
         elements[0] - elements[1] + elements[2]
     }
 
-    /// Transpose of Matrix 3x3
     fn transpose(&self) -> Matrix3x3 {
         Matrix3x3::new_idx(
             self.r1[0], self.r2[0], self.r3[0], self.r1[1], self.r2[1], self.r3[1], self.r1[2],
@@ -85,7 +115,20 @@ impl Matrix for Matrix3x3 {
         )
     }
 
-    /// Inverse of a Matrix 3x3
+    /// `               | 1 2 3 |`
+    /// `let matrix =   | 0 1 5 |`
+    /// `               | 5  6 0 |`
+    /// `                           | -30  18  7 |`
+    /// `let matrix_inverse =  1/5  |  25 -15 -5 |`
+    /// `                           | -5   4   1 |`
+    ///
+    /// ```
+    /// use mathf::matrix::{Matrix, Matrix3x3};
+    ///
+    /// let matrix = Matrix3x3::new_idx(1.0, 2.0, 3.0, 0.0, 1.0, 5.0, 5.0,  6.0, 0.0);
+    /// let matrix_inverse = Matrix3x3::new_idx(-6.0, 3.6, 1.4, 5.0, -3.0, -1.0, -1.0,  0.8, 0.2);
+    /// assert_eq!(matrix.inverse(0.001).unwrap(), matrix_inverse);
+    /// ```
     fn inverse(self, delta: f32) -> Result<Matrix3x3, Error> {
         let modulus = self.modulus();
         if float_eq(modulus, 0f32, delta) {
@@ -126,6 +169,7 @@ impl Matrix3x3 {
         }
     }
 
+    /// [wiki](https://en.wikipedia.org/wiki/Minor_(linear_algebra))
     pub fn cofactor(&self) -> Matrix3x3 {
         let elements1: Vec<f32> = (0..=2)
             .map(|i| {
@@ -180,20 +224,45 @@ impl Matrix3x3 {
 }
 
 impl Matrix for Matrix2x2 {
-    /// Identity Matrrix 2x2, where all elements Uij that i = j are `1`
+    /// | 1 0 |
+    /// | 0 1 |
     fn IDENTITY() -> Self {
         Matrix2x2::new_idx(1f32, 0f32, 0f32, 1f32)
     }
 
-    ///Matrix 2x2 determinant
+    /// `               | 4 -3 |`
+    /// `let matrix =   | 0  2 |`
+
+    /// `matrix.det() = 2`
+    ///
+    /// ```
+    /// use mathf::matrix::{Matrix, Matrix2x2};
+    ///
+    /// let matrix = Matrix2x2::new_idx(4.0, -3.0, 0.0, 2.0);
+    /// assert_eq!(matrix.det(), 8f32);
+    /// ```
     fn det(&self) -> f32 {
         self.r1.x * self.r2.y - self.r1.y * self.r2.x
     }
 
+    /// `               | 4 -3 |`
+    /// `let matrix =   | 0  2 |`
+
+    /// `matrix.det() = 2`
+    ///
+    /// ```
+    /// use mathf::matrix::{Matrix, Matrix2x2};
+    ///
+    /// let matrix = Matrix2x2::new_idx(4.0, -3.0, 0.0, 2.0);
+    /// assert_eq!(matrix.vectorize(), vec![
+    ///    vec![4.0, -3.0], vec![0.0, 2.0]    
+    /// ]);
+    /// ```
     fn vectorize(&self) -> Vec<Vec<f32>> {
         vec![self.r1.to_vector(), self.r2.to_vector()]
     }
 
+    /// Same as determinant for Matrix 2x2
     fn modulus(&self) -> f32 {
         (self.r1.x * self.r2.y) - (self.r2.x * self.r1.y)
     }
@@ -202,7 +271,19 @@ impl Matrix for Matrix2x2 {
         Matrix2x2::new_idx(self.r1.x, self.r2.x, self.r1.y, self.r2.y)
     }
 
-    ///Inverse of a Matrix 2x2
+    /// `               | 4 7 |`
+    /// `let matrix =   | 2 6 |`
+    ///
+    /// `                            |  6 -7 |`
+    /// `let matrix_inverse =  1/10  | -2  4 |`
+    ///
+    /// ```
+    /// use mathf::matrix::{Matrix, Matrix2x2};
+    ///
+    /// let matrix = Matrix2x2::new_idx(4.0, 7.0, 2.0, 6.0);
+    /// let matrix_inverse = Matrix2x2::new_idx(0.6, -0.7, -0.2, 0.4);
+    /// assert_eq!(matrix.inverse(0.001).unwrap(), matrix_inverse);
+    /// ```
     fn inverse(self, delta: f32) -> Result<Matrix2x2, Error> {
         let det = self.clone().det();
 

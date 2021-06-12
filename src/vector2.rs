@@ -35,30 +35,49 @@ impl Vector2 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with UP direction (y=1, x=0)
+    /// | 0 |
+    /// | 1 |
+    /// y=1, x=0
     pub fn UP() -> Vector2 {
         Vector2 { x: 0f32, y: 1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with DOWN direction (y=-1, x=0)
+    /// |  0 |
+    /// | -1 |
+    /// y=-1, x=0
     pub fn DOWN() -> Vector2 {
         Vector2 { x: 0f32, y: -1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with RIGHT direction (y=0, x=1)
+    /// | 1 |
+    /// | 0 |
+    /// y=0, x=1
     pub fn RIGHT() -> Vector2 {
         Vector2 { x: 1f32, y: 0f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Vector with LEFT direction (y=0, x=-1)
+    /// | -1 |
+    /// |  0 |
+    /// y=0, x=-1
     pub fn LEFT() -> Vector2 {
         Vector2 { x: -1f32, y: 0f32 }
     }
 
-    ///Transforms a Vector 2 from one vectorspace to another via a matrix2x2 transform
+    /// Transforms a Vector 2 from one vectorspace to another via a matrix2x2 transform
+    /// `| 3 1 |   | 4 |   | 5 |   | 20 |`
+    /// `| 5 7 | * | 3 | + | 6 | = | 47 |`
+    /// ```
+    /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector}};
+    /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);
+    /// let vec    = Vector2::new(4.0, 3.0);
+    /// let offset = Vector2::new(5.0, 6.0);
+    /// let exp    = Vector2::new(20.0, 47.0);
+    ///
+    /// assert_eq!(vec.transform(matrix, offset), exp);
+    /// ```
     pub fn transform(self, m: M, vec: Vector2) -> Vector2 {
         (m * self) + vec
     }
@@ -72,23 +91,25 @@ impl Vector2 {
 
 impl Vector for Vector2 {
     #[allow(dead_code, non_snake_case)]
-    ///Defines a 2D Vector with x=1 and y=1
+    /// | 1 |
+    /// | 1 |
+    /// x=1, y=1
     fn ONE() -> Vector2 {
         Vector2 { x: 1f32, y: 1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    ///Defines a Modulus ZERO Vector (x=0, y=0)
+    /// | 0 |
+    /// | 0 |
+    ///Defines a modulus ZERO Vector (x=0, y=0)
     fn ZERO() -> Vector2 {
         Vector2 { x: 0f32, y: 0f32 }
     }
 
-    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
     fn magnitude(&self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
     }
 
-    ///Transforms a Vector2 into a Vec<f32>
     fn to_vector(&self) -> Vec<f32> {
         vec![self.x, self.y]
     }

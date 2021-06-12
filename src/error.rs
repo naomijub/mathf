@@ -1,6 +1,11 @@
+/// Error for mathf types
 #[derive(Debug, PartialEq)]
 pub enum Error {
+    /// Can't inverse a matrix which determinant is zero.
+    /// matrix.det() == 0
     NonZeroDeterminantMatrix,
+    /// Can't inverse a 3x3 Singular Matrix.
+    /// *A square matrix is singular if and only if its determinant is zero.*
     SingularMatrixNotInversible,
 }
 

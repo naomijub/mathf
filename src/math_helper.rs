@@ -1,3 +1,10 @@
+/// Function to determine possible equality problems between 2 equal floats.
+/// `delta` is the equality variance.
+/// ```
+/// use mathf::math_helper::float_eq;
+/// assert!(float_eq(4.00001, 4.00002, 0.0001));
+/// assert!(!float_eq(4.00001, 4.00002, 0.00001));
+/// ```
 pub fn float_eq(a: f32, b: f32, delta: f32) -> bool {
     a == b || (a.abs() - b.abs()).abs().le(&delta)
 }
