@@ -637,4 +637,12 @@ mod tests {
         assert_eq!(v.clone() / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
         assert_eq!(v.clone() * 2.0, Vector3::new(2f32, 2f32, 2f32));
     }
+
+    #[test]
+    fn arithmetic_by_ref() {
+        let v = Vector3::ONE();
+
+        assert_eq!(&v / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
+        assert_eq!(&v * 2.0, Vector3::new(2f32, 2f32, 2f32));
+    }
 }
