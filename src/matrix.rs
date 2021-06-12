@@ -40,6 +40,7 @@ pub trait Matrix {
     fn inverse(&self, delta: f32) -> Result<Self, Error>
     where
         Self: Sized;
+    fn is_orthogonal(&self) -> bool;
 }
 
 impl Matrix for Matrix3x3 {
@@ -139,6 +140,15 @@ impl Matrix for Matrix3x3 {
         let cofactor_matrix = self.cofactor();
         let traspose = cofactor_matrix.transpose();
         Ok(traspose / modulus)
+    }
+
+    fn is_orthogonal(&self) -> bool {
+        let inv = self.inverse(0.0001);
+        if inv.is_ok() {
+            self.transpose() == inv.unwrap()
+        } else {
+            false
+        }
     }
 }
 
@@ -292,6 +302,15 @@ impl Matrix for Matrix2x2 {
                 Vector2::new(self.r2.y / det, -self.r1.y / det),
                 Vector2::new(-self.r2.x / det, self.r1.x / det),
             ))
+        }
+    }
+
+    fn is_orthogonal(&self) -> bool {
+        let inv = self.inverse(0.0001);
+        if inv.is_ok() {
+            self.transpose() == inv.unwrap()
+        } else {
+            false
         }
     }
 }
@@ -924,6 +943,12 @@ mod tests_matrix2x2 {
         let expected = Matrix2x2::new_idx(1f32, 3f32, 2f32, 4f32);
         assert_eq!(expected, matrix.transpose());
     }
+
+    #[test]
+    fn orthogonal() {
+        let matrix = Matrix2x2::new_idx(1.0, 0.0, 0.0, -1.0);
+        assert!(matrix.is_orthogonal())
+    }
 }
 
 #[cfg(test)]
@@ -987,6 +1012,22 @@ mod tests_matrix3x3_inverse_functions {
         let matrix = Matrix3x3::new_idx(2f32, -1f32, 3f32, 1f32, 1f32, 1f32, 1f32, -1f32, 1f32);
 
         assert_eq!(matrix.modulus(), -2f32);
+    }
+
+    #[test]
+    fn orthogonal() {
+        let matrix = Matrix3x3::new_idx(
+            2f32 / 3f32,
+            1f32 / 3f32,
+            2f32 / 3f32,
+            -2f32 / 3f32,
+            2f32 / 3f32,
+            1f32 / 3f32,
+            1f32 / 3f32,
+            2f32 / 3f32,
+            -2f32 / 3f32,
+        );
+        assert!(matrix.is_orthogonal())
     }
 }
 
