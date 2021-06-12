@@ -21,6 +21,81 @@ pub struct Matrix2x2 {
     pub r2: Vector2,
 }
 
+pub trait Matrix {
+    #[allow(non_snake_case)]
+    fn IDENTITY() -> Self;
+    fn det(&self) -> f32;
+    fn vectorize(&self) -> Vec<Vec<f32>>;
+    fn modulus(&self) -> f32;
+    fn transpose(&self) -> Self;
+    fn inverse(self, delta: f32) -> Result<Self, Error>
+    where
+        Self: Sized;
+}
+
+impl Matrix for Matrix3x3 {
+    /// Identity Matrrix 3x3, where all elements Uij that i = j are `1`
+    fn IDENTITY() -> Self {
+        Matrix3x3::new_idx(1f32, 0f32, 0f32, 0f32, 1f32, 0f32, 0f32, 0f32, 1f32)
+    }
+
+    ///Matrix 3x3 determinant
+    fn det(&self) -> f32 {
+        (self.r1.x * self.r2.y * self.r3.z
+            + self.r1.y * self.r2.z * self.r3.x
+            + self.r1.z * self.r2.x * self.r3.y)
+            - (self.r1.z * self.r2.y * self.r3.x
+                + self.r1.y * self.r2.x * self.r3.z
+                + self.r1.x * self.r2.z * self.r3.y)
+    }
+
+    ///Transforms a Matrix3x3 into a Vec<Vec<f32>> by row
+    fn vectorize(&self) -> Vec<Vec<f32>> {
+        vec![
+            self.r1.to_vector(),
+            self.r2.to_vector(),
+            self.r3.to_vector(),
+        ]
+    }
+
+    /// Modulus of a matrix 3x3
+    fn modulus(&self) -> f32 {
+        let elements: Vec<f32> = (0..=2)
+            .map(|i| {
+                let idxs: Vec<usize> = (0..=2).filter(|x| x != &i).collect();
+                let factor = self.r1[i];
+                let inner2x2 = Matrix2x2::new_idx(
+                    self.r2[idxs[0]],
+                    self.r2[idxs[1]],
+                    self.r3[idxs[0]],
+                    self.r3[idxs[1]],
+                );
+                factor * inner2x2.det()
+            })
+            .collect();
+        elements[0] - elements[1] + elements[2]
+    }
+
+    /// Transpose of Matrix 3x3
+    fn transpose(&self) -> Matrix3x3 {
+        Matrix3x3::new_idx(
+            self.r1[0], self.r2[0], self.r3[0], self.r1[1], self.r2[1], self.r3[1], self.r1[2],
+            self.r2[2], self.r3[2],
+        )
+    }
+
+    /// Inverse of a Matrix 3x3
+    fn inverse(self, delta: f32) -> Result<Matrix3x3, Error> {
+        let modulus = self.modulus();
+        if float_eq(modulus, 0f32, delta) {
+            return Err(Error::SingularMatrixNotInversible);
+        }
+        let cofactor_matrix = self.cofactor();
+        let traspose = cofactor_matrix.transpose();
+        Ok(traspose / modulus)
+    }
+}
+
 impl Matrix3x3 {
     ///Creates a new Matrix3x3 from 3 vector3 rows
     pub fn new(r1: Vector3, r2: Vector3, r3: Vector3) -> Matrix3x3 {
@@ -48,48 +123,6 @@ impl Matrix3x3 {
             r2: Vector3::new(n4, n5, n6),
             r3: Vector3::new(n7, n8, n9),
         }
-    }
-
-    #[allow(dead_code, non_snake_case)]
-    pub fn IDENTITY() -> Matrix3x3 {
-        Matrix3x3::new_idx(1f32, 0f32, 0f32, 0f32, 1f32, 0f32, 0f32, 0f32, 1f32)
-    }
-
-    ///Matrix 3x3 determinant
-    pub fn det(&self) -> f32 {
-        (self.r1.x * self.r2.y * self.r3.z
-            + self.r1.y * self.r2.z * self.r3.x
-            + self.r1.z * self.r2.x * self.r3.y)
-            - (self.r1.z * self.r2.y * self.r3.x
-                + self.r1.y * self.r2.x * self.r3.z
-                + self.r1.x * self.r2.z * self.r3.y)
-    }
-
-    ///Transforms a Matrix3x3 into a Vec<Vec<f32>>
-    pub fn vectorize(&self) -> Vec<Vec<f32>> {
-        vec![
-            self.r1.to_vector(),
-            self.r2.to_vector(),
-            self.r3.to_vector(),
-        ]
-    }
-
-    /// Modulus of a matrix 3x3
-    pub fn modulus(&self) -> f32 {
-        let elements: Vec<f32> = (0..=2)
-            .map(|i| {
-                let idxs: Vec<usize> = (0..=2).filter(|x| x != &i).collect();
-                let factor = self.r1[i];
-                let inner2x2 = Matrix2x2::new_idx(
-                    self.r2[idxs[0]],
-                    self.r2[idxs[1]],
-                    self.r3[idxs[0]],
-                    self.r3[idxs[1]],
-                );
-                factor * inner2x2.det()
-            })
-            .collect();
-        elements[0] - elements[1] + elements[2]
     }
 
     pub fn cofactor(&self) -> Matrix3x3 {
@@ -143,24 +176,43 @@ impl Matrix3x3 {
             elements3[2],
         )
     }
+}
 
-    /// Transpose of Matrix 3x3
-    pub fn transpose(&self) -> Matrix3x3 {
-        Matrix3x3::new_idx(
-            self.r1[0], self.r2[0], self.r3[0], self.r1[1], self.r2[1], self.r3[1], self.r1[2],
-            self.r2[2], self.r3[2],
-        )
+impl Matrix for Matrix2x2 {
+    /// Identity Matrrix 2x2, where all elements Uij that i = j are `1`
+    fn IDENTITY() -> Self {
+        Matrix2x2::new_idx(1f32, 0f32, 0f32, 1f32)
     }
 
-    /// Inverse of a Matrix 3x3
-    pub fn inverse(self, delta: f32) -> Result<Matrix3x3, Error> {
-        let modulus = self.modulus();
-        if float_eq(modulus, 0f32, delta) {
-            return Err(Error::SingularMatrixNotInversible);
+    ///Matrix 2x2 determinant
+    fn det(&self) -> f32 {
+        self.r1.x * self.r2.y - self.r1.y * self.r2.x
+    }
+
+    fn vectorize(&self) -> Vec<Vec<f32>> {
+        vec![self.r1.to_vector(), self.r2.to_vector()]
+    }
+
+    fn modulus(&self) -> f32 {
+        (self.r1.x * self.r2.y) - (self.r2.x * self.r1.y)
+    }
+
+    fn transpose(&self) -> Self {
+        Matrix2x2::new_idx(self.r1.x, self.r2.x, self.r1.y, self.r2.y)
+    }
+
+    ///Inverse of a Matrix 2x2
+    fn inverse(self, delta: f32) -> Result<Matrix2x2, Error> {
+        let det = self.clone().det();
+
+        if math_helper::float_eq(det, 0f32, delta) {
+            Err(Error::NonZeroDeterminantMatrix)
+        } else {
+            Ok(Matrix2x2::new(
+                Vector2::new(self.r2.y / det, -self.r1.y / det),
+                Vector2::new(-self.r2.x / det, self.r1.x / det),
+            ))
         }
-        let cofactor_matrix = self.cofactor();
-        let traspose = cofactor_matrix.transpose();
-        Ok(traspose / modulus)
     }
 }
 
@@ -175,30 +227,6 @@ impl Matrix2x2 {
         Matrix2x2 {
             r1: Vector2::new(n1, n2),
             r2: Vector2::new(n3, n4),
-        }
-    }
-
-    #[allow(dead_code, non_snake_case)]
-    pub fn IDENTITY() -> Matrix2x2 {
-        Matrix2x2::new_idx(1f32, 0f32, 0f32, 1f32)
-    }
-
-    ///Matrix 2x2 determinant
-    pub fn det(self) -> f32 {
-        self.r1.x * self.r2.y - self.r1.y * self.r2.x
-    }
-
-    ///Inverse of a Matrix 2x2
-    pub fn inverse(self, delta: f32) -> Result<Matrix2x2, Error> {
-        let det = self.clone().det();
-
-        if math_helper::float_eq(det, 0f32, delta) {
-            Err(Error::NonZeroDeterminantMatrix)
-        } else {
-            Ok(Matrix2x2::new(
-                Vector2::new(self.r2.y / det, -self.r1.y / det),
-                Vector2::new(-self.r2.x / det, self.r1.x / det),
-            ))
         }
     }
 }
@@ -491,6 +519,20 @@ mod tests_matrix2x2 {
         let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
         let expected = Matrix2x2::new_idx(-2f32, 1f32, 1.5f32, -0.5f32);
         assert_eq!(expected, matrix.inverse(0.001f32).unwrap());
+    }
+
+    #[test]
+    fn modulus() {
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let expected = -2f32;
+        assert_eq!(expected, matrix.modulus());
+    }
+
+    #[test]
+    fn transpose() {
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let expected = Matrix2x2::new_idx(1f32, 3f32, 2f32, 4f32);
+        assert_eq!(expected, matrix.transpose());
     }
 }
 

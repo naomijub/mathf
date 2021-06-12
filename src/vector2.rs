@@ -77,6 +77,12 @@ impl Vector2 {
     }
 
     #[allow(dead_code)]
+    ///Transforms a Vector2 into a Vec<f32>
+    pub fn to_vector(&self) -> Vec<f32> {
+        vec![self.x, self.y]
+    }
+
+    #[allow(dead_code)]
     ///Transforms a Vector 2 from one vectorspace to another via a matrix2x2 transform
     pub fn transform(self, m: M, vec: Vector2) -> Vector2 {
         (m * self) + vec
