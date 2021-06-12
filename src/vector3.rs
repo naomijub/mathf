@@ -116,7 +116,7 @@ impl Vector3 {
 
     ///Transforms a Vector 3 from one vectorspace to another  via a matrix3x3 transform.
     /// Same as Vector2 but with Matrix3x3 and Vector3.
-    pub fn transform(self, m: M, vec: Vector3) -> Vector3 {
+    pub fn transform(&self, m: M, vec: Vector3) -> Vector3 {
         (m * self) + vec
     }
 
@@ -133,7 +133,7 @@ impl Vector3 {
     }
 
     ///Scales a Vector 3 in a non uniform way: (a, b, c) * (x, y, z) = (ax, by, cz)
-    pub fn nonuniform_scale(self, a: f32, b: f32, c: f32) -> Vector3 {
+    pub fn nonuniform_scale(&self, a: f32, b: f32, c: f32) -> Vector3 {
         let scale_matrix = M::new(
             Vector3::new(a, 0f32, 0f32),
             Vector3::new(0f32, b, 0f32),
@@ -194,10 +194,37 @@ impl ops::Add for Vector3 {
     }
 }
 
+impl ops::Add for &Vector3 {
+    type Output = Vector3;
+
+    ///Implements the &Vector3 '+' trait
+    fn add(self, new_vec: &Vector3) -> Vector3 {
+        Vector3 {
+            x: self.x + new_vec.x,
+            y: self.y + new_vec.y,
+            z: self.z + new_vec.z,
+        }
+    }
+}
+
 impl ops::Mul<f32> for Vector3 {
     type Output = Vector3;
 
     ///Implements the scalar multiplication of a Vector3 with a f32. Other numbers should
+    ///be passed with 'i as f32'
+    fn mul(self, value: f32) -> Vector3 {
+        Vector3 {
+            x: self.x * value,
+            y: self.y * value,
+            z: self.z * value,
+        }
+    }
+}
+
+impl ops::Mul<f32> for &Vector3 {
+    type Output = Vector3;
+
+    ///Implements the scalar multiplication of a &Vector3 with a f32. Other numbers should
     ///be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector3 {
         Vector3 {
@@ -222,6 +249,20 @@ impl ops::Div<f32> for Vector3 {
     }
 }
 
+impl ops::Div<f32> for &Vector3 {
+    type Output = Vector3;
+
+    ///Implements the scalar division of a &Vector3 with a f32. Other numbers should
+    ///be passed with 'i as f32'
+    fn div(self, value: f32) -> Vector3 {
+        Vector3 {
+            x: self.x / value,
+            y: self.y / value,
+            z: self.z / value,
+        }
+    }
+}
+
 impl ops::Mul<Vector3> for Vector3 {
     type Output = f32;
 
@@ -231,11 +272,33 @@ impl ops::Mul<Vector3> for Vector3 {
     }
 }
 
+impl ops::Mul<&Vector3> for &Vector3 {
+    type Output = f32;
+
+    ///Implements the dot product of 2 &Vector3 as '*'.
+    fn mul(self, new_vec: &Vector3) -> f32 {
+        self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
+    }
+}
+
 impl ops::Sub for Vector3 {
     type Output = Vector3;
 
     ///Implements the Vector3 '-' trait
     fn sub(self, new_vec: Vector3) -> Vector3 {
+        Vector3 {
+            x: self.x - new_vec.x,
+            y: self.y - new_vec.y,
+            z: self.z - new_vec.z,
+        }
+    }
+}
+
+impl ops::Sub for &Vector3 {
+    type Output = Vector3;
+
+    ///Implements the &Vector3 '-' trait
+    fn sub(self, new_vec: &Vector3) -> Vector3 {
         Vector3 {
             x: self.x - new_vec.x,
             y: self.y - new_vec.y,
@@ -297,9 +360,9 @@ impl Index<usize> for Vector3 {
 
 #[allow(dead_code)]
 ///Vector3 linear indenpendency (3D)
-pub fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3, delta: f32) -> bool {
-    let dot1 = vec1.clone() * vec2.clone();
-    let dot2 = vec1 * vec3.clone();
+pub fn lin_ind(vec1: &Vector3, vec2: &Vector3, vec3: &Vector3, delta: f32) -> bool {
+    let dot1 = vec1 * vec2;
+    let dot2 = vec1 * vec3;
     let dot3 = vec3 * vec2;
     math_helper::float_eq(dot1, 0f32, delta)
         && math_helper::float_eq(dot2, 0f32, delta)
@@ -308,22 +371,22 @@ pub fn lin_ind(vec1: Vector3, vec2: Vector3, vec3: Vector3, delta: f32) -> bool 
 
 #[allow(dead_code)]
 /// Cos between two vector3
-pub fn cos(vec1: Vector3, vec2: Vector3) -> f32 {
-    let dot_product = vec1.clone() * vec2.clone();
+pub fn cos(vec1: &Vector3, vec2: &Vector3) -> f32 {
+    let dot_product = vec1 * vec2;
     let denominator = vec1.magnitude() * vec2.magnitude();
     dot_product / denominator
 }
 
 #[allow(dead_code)]
 /// Sin between two vector3
-pub fn sin(vec1: Vector3, vec2: Vector3) -> f32 {
+pub fn sin(vec1: &Vector3, vec2: &Vector3) -> f32 {
     let cos = cos(vec1, vec2);
     (1f32 - cos.powi(2)).sqrt()
 }
 
 #[allow(dead_code)]
 ///Distance between 2 point3
-pub fn dist(a: Point3, b: Point3) -> f32 {
+pub fn dist(a: &Point3, b: &Point3) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
     let y_dist = (a.y - b.y).powi(2);
     let z_dist = (a.z - b.z).powi(2);
@@ -358,6 +421,12 @@ mod tests {
     }
 
     #[test]
+    fn adds_right_and_left_vectors_by_ref() {
+        let actual = &Vector3::RIGHT() + &Vector3::LEFT();
+        assert_eq!(actual.x, 0f32);
+    }
+
+    #[test]
     fn adds_right_and_up() {
         let actual = Vector3::RIGHT() + Vector3::UP();
         assert_eq!(actual.x, 1f32);
@@ -374,8 +443,24 @@ mod tests {
     }
 
     #[test]
+    fn mult_one_by_3_by_ref() {
+        let actual = &Vector3::ONE() * 3f32;
+        assert_eq!(actual.x, 3f32);
+        assert_eq!(actual.y, 3f32);
+        assert_eq!(actual.z, 3f32);
+    }
+
+    #[test]
     fn sub_right_from_one() {
         let actual = Vector3::ONE() - Vector3::RIGHT();
+        assert_eq!(actual.x, 0f32);
+        assert_eq!(actual.y, 1f32);
+        assert_eq!(actual.z, 1f32);
+    }
+
+    #[test]
+    fn sub_right_from_one_by_ref() {
+        let actual = &Vector3::ONE() - &Vector3::RIGHT();
         assert_eq!(actual.x, 0f32);
         assert_eq!(actual.y, 1f32);
         assert_eq!(actual.z, 1f32);
@@ -457,13 +542,23 @@ mod tests {
 
     #[test]
     fn veirfies_vectors_linearly_independent() {
-        let actual = lin_ind(Vector3::UP(), Vector3::RIGHT(), Vector3::FOWARD(), 0.001f32);
+        let actual = lin_ind(
+            &Vector3::UP(),
+            &Vector3::RIGHT(),
+            &Vector3::FOWARD(),
+            0.001f32,
+        );
         assert_eq!(actual, true);
     }
 
     #[test]
     fn veirfies_vectors_linearly_dependent() {
-        let actual = lin_ind(Vector3::UP(), Vector3::ONE(), Vector3::FOWARD(), 0.001f32);
+        let actual = lin_ind(
+            &Vector3::UP(),
+            &Vector3::ONE(),
+            &Vector3::FOWARD(),
+            0.001f32,
+        );
         assert_eq!(actual, false);
     }
 
@@ -471,19 +566,19 @@ mod tests {
     fn verifies_cos_between_vecs() {
         let vec1 = Vector3::new(4f32, 3f32, 5f32);
         let vec2 = Vector3::new(3f32, 4f32, 5f32);
-        assert_eq!(0.98f32, cos(vec1, vec2));
+        assert_eq!(0.98f32, cos(&vec1, &vec2));
     }
 
     #[test]
     fn verifies_sin_between_vecs() {
         let vec1 = Vector3::new(4f32, 3f32, 5f32);
         let vec2 = Vector3::new(3f32, 4f32, 5f32);
-        assert_eq!(0.19899738f32, sin(vec1, vec2));
+        assert_eq!(0.19899738f32, sin(&vec1, &vec2));
     }
 
     #[test]
     fn dist_origin_point_one() {
-        assert_eq!(1.7320508f32, dist(Point3::origin(), Point3::ONE()));
+        assert_eq!(1.7320508f32, dist(&Point3::origin(), &Point3::ONE()));
     }
 
     #[test]
@@ -541,5 +636,13 @@ mod tests {
 
         assert_eq!(v.clone() / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
         assert_eq!(v.clone() * 2.0, Vector3::new(2f32, 2f32, 2f32));
+    }
+
+    #[test]
+    fn arithmetic_by_ref() {
+        let v = Vector3::ONE();
+
+        assert_eq!(&v / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
+        assert_eq!(&v * 2.0, Vector3::new(2f32, 2f32, 2f32));
     }
 }
