@@ -11,7 +11,7 @@
 * 2D Vector
 * 3D Vector
 * 3 x 3 Matrix
-* 2 x2 Matrix
+* 2 x 2 Matrix
 
 ## Inspired by:
 * Eric Lengyel, Mathmatics for 3D Game Programming and Computer Graphics, Third edition, Cengage Learning.
@@ -20,6 +20,5 @@
 ## Current TODO:
 - [ ] Vector Rotation
 - [ ] Quaternions
-- [x] Matrix 3x3 Inverse
 - [ ] Linear Systems
 - [ ] Examples

@@ -18,6 +18,8 @@ pub mod vector {
         fn to_vector(&self) -> Vec<f32>;
     }
 
+    pub use vector2::Point2;
     pub use vector2::Vector2;
+    pub use vector3::Point3;
     pub use vector3::Vector3;
 }

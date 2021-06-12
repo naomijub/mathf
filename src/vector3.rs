@@ -328,6 +328,12 @@ impl Point3 {
     fn ONE() -> Point3 {
         Point3::new(1f32, 1f32, 1f32)
     }
+
+    ///Transforms a Point 3 from one vectorspace to another  via a matrix3x3 transform.
+    /// Same as Point2 but with Point3, Matrix3x3 and Vector3.
+    pub fn transform(&self, m: M, vec: Vector3) -> Point3 {
+        (m * self) + vec
+    }
 }
 
 impl ops::Add<Vector3> for Point3 {
@@ -340,6 +346,15 @@ impl ops::Add<Vector3> for Point3 {
             y: self.y + new_vec.y,
             z: self.z + new_vec.z,
         }
+    }
+}
+
+impl ops::Mul<&Point3> for &Vector3 {
+    type Output = f32;
+
+    ///Implements the dot product of &Point3 and &Vector3 as '*'.
+    fn mul(self, new_vec: &Point3) -> f32 {
+        self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
     }
 }
 
@@ -644,5 +659,22 @@ mod tests {
 
         assert_eq!(&v / 2.0, Vector3::new(0.5f32, 0.5f32, 0.5f32));
         assert_eq!(&v * 2.0, Vector3::new(2f32, 2f32, 2f32));
+    }
+
+    #[test]
+    fn dot_product_point() {
+        let point = Point3 {
+            x: 2f32,
+            y: 1f32,
+            z: 2f32,
+        };
+        let vec = Vector3 {
+            x: 1f32,
+            y: 2f32,
+            z: 3f32,
+        };
+        let actual = &vec * &point;
+        let expected = 10f32;
+        assert_eq!(actual, expected);
     }
 }
