@@ -293,6 +293,13 @@ impl ops::Mul<&Point2> for &Vector2 {
     }
 }
 
+impl PartialEq<Vector2> for Point2 {
+    fn eq(&self, other: &Vector2) -> bool {
+        let to_vec = self.to_vec();
+        to_vec.x == other.x && to_vec.y == other.y
+    }
+}
+
 #[allow(dead_code)]
 ///Vector2 linear indenpendency (2D)
 pub fn lin_ind(vec1: &Vector2, vec2: &Vector2, delta: f32) -> bool {
@@ -544,5 +551,12 @@ mod tests {
             Point2::new(8f32, 15f32),
             point.transform(transform_matrix, vec_transform_vec)
         );
+    }
+
+    #[test]
+    fn point_vec_eq() {
+        let point = Point2 { x: 1f32, y: 2f32 };
+        let vec = Vector2 { x: 1f32, y: 2f32 };
+        assert_eq!(point, vec);
     }
 }

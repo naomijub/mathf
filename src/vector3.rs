@@ -28,7 +28,7 @@ impl Vector3 {
 
     ///Instantiates a new Vector3 from 2 Point3 (initial position, final position).
     ///The new vector is created as final - initial (Points)
-    pub fn diff(origin: Point3, destination: Point3) -> Vector3 {
+    pub fn diff(origin: Point3, destination: &Point3) -> Vector3 {
         Vector3 {
             x: destination.x - origin.x,
             y: destination.y - origin.y,
@@ -314,7 +314,7 @@ impl Point3 {
     }
 
     ///Creates a new Vector3 relative to position (0, 0, 0)
-    pub fn to_vec(self) -> Vector3 {
+    pub fn to_vec(&self) -> Vector3 {
         Vector3::diff(Point3::origin(), self)
     }
 
@@ -355,6 +355,13 @@ impl ops::Mul<&Point3> for &Vector3 {
     ///Implements the dot product of &Point3 and &Vector3 as '*'.
     fn mul(self, new_vec: &Point3) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
+    }
+}
+
+impl PartialEq<Vector3> for Point3 {
+    fn eq(&self, other: &Vector3) -> bool {
+        let to_vec = self.to_vec();
+        to_vec.x == other.x && to_vec.y == other.y && to_vec.z == other.z
     }
 }
 
@@ -522,7 +529,7 @@ mod tests {
     fn constructs_vector3_from_points3() {
         let vec = Vector3::diff(
             Point3::new(1f32, -1f32, 2f32),
-            Point3::new(2f32, 3f32, 2f32),
+            &Point3::new(2f32, 3f32, 2f32),
         );
         assert_eq!(vec.x, 1f32);
         assert_eq!(vec.y, 4f32);
@@ -676,5 +683,20 @@ mod tests {
         let actual = &vec * &point;
         let expected = 10f32;
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn point_vec_eq() {
+        let point = Point3 {
+            x: 1f32,
+            y: 2f32,
+            z: 3f32,
+        };
+        let vec = Vector3 {
+            x: 1f32,
+            y: 2f32,
+            z: 3f32,
+        };
+        assert_eq!(point, vec);
     }
 }
