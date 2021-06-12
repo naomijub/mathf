@@ -342,6 +342,13 @@ mod tests {
     }
 
     #[test]
+    fn adds_right_and_up_by_ref() {
+        let actual = &Vector2::RIGHT() + &Vector2::UP();
+        assert_eq!(actual.x, 1f32);
+        assert_eq!(actual.y, 1f32);
+    }
+
+    #[test]
     fn mult_one_by_3() {
         let actual = Vector2::ONE() * 3f32;
         assert_eq!(actual.x, 3f32);
@@ -349,8 +356,22 @@ mod tests {
     }
 
     #[test]
+    fn mult_one_by_3_by_ref() {
+        let actual = &Vector2::ONE() * 3f32;
+        assert_eq!(actual.x, 3f32);
+        assert_eq!(actual.y, 3f32);
+    }
+
+    #[test]
     fn sub_right_from_one() {
         let actual = Vector2::ONE() - Vector2::RIGHT();
+        assert_eq!(actual.x, 0f32);
+        assert_eq!(actual.y, 1f32);
+    }
+
+    #[test]
+    fn sub_right_from_one_by_ref() {
+        let actual = &Vector2::ONE() - &Vector2::RIGHT();
         assert_eq!(actual.x, 0f32);
         assert_eq!(actual.y, 1f32);
     }
@@ -478,5 +499,13 @@ mod tests {
 
         assert_eq!(v.clone() / 2.0, Vector2::new(0.5f32, 0.5f32));
         assert_eq!(v.clone() * 2.0, Vector2::new(2f32, 2f32));
+    }
+
+    #[test]
+    fn arithmetic_by_ref() {
+        let v = Vector2::ONE();
+
+        assert_eq!(&v / 2.0, Vector2::new(0.5f32, 0.5f32));
+        assert_eq!(&v * 2.0, Vector2::new(2f32, 2f32));
     }
 }

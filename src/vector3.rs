@@ -421,6 +421,12 @@ mod tests {
     }
 
     #[test]
+    fn adds_right_and_left_vectors_by_ref() {
+        let actual = &Vector3::RIGHT() + &Vector3::LEFT();
+        assert_eq!(actual.x, 0f32);
+    }
+
+    #[test]
     fn adds_right_and_up() {
         let actual = Vector3::RIGHT() + Vector3::UP();
         assert_eq!(actual.x, 1f32);
@@ -437,8 +443,24 @@ mod tests {
     }
 
     #[test]
+    fn mult_one_by_3_by_ref() {
+        let actual = &Vector3::ONE() * 3f32;
+        assert_eq!(actual.x, 3f32);
+        assert_eq!(actual.y, 3f32);
+        assert_eq!(actual.z, 3f32);
+    }
+
+    #[test]
     fn sub_right_from_one() {
         let actual = Vector3::ONE() - Vector3::RIGHT();
+        assert_eq!(actual.x, 0f32);
+        assert_eq!(actual.y, 1f32);
+        assert_eq!(actual.z, 1f32);
+    }
+
+    #[test]
+    fn sub_right_from_one_by_ref() {
+        let actual = &Vector3::ONE() - &Vector3::RIGHT();
         assert_eq!(actual.x, 0f32);
         assert_eq!(actual.y, 1f32);
         assert_eq!(actual.z, 1f32);
