@@ -1176,6 +1176,12 @@ mod tests_matrix2x2 {
     }
 
     #[test]
+    fn not_orthogonal() {
+        let matrix = Matrix2x2::new_idx(1.0, 1.0, 1.0, 1.0);
+        assert!(!matrix.is_orthogonal())
+    }
+
+    #[test]
     fn uniform_scale() {
         let matrix = Matrix2x2::scale_matrix(4f32);
         let expected = Matrix2x2::new_idx(4f32, 0f32, 0f32, 4f32);
@@ -1286,6 +1292,12 @@ mod tests_matrix3x3_inverse_functions {
             -2f32 / 3f32,
         );
         assert!(matrix.is_orthogonal())
+    }
+
+    #[test]
+    fn not_orthogonal() {
+        let matrix = Matrix3x3::new_idx(1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32);
+        assert!(!matrix.is_orthogonal())
     }
 }
 
