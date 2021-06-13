@@ -1,18 +1,16 @@
 use crate::math_helper;
-use crate::vector::Vector;
-
-use super::matrix::Matrix2x2 as M;
+use crate::matrix::Matrix2x2 as M;
 
 use std::ops;
 
-///A 2D Vector with x and y coordinates: Vector2
+/// A 2D Vector with x and y coordinates: Vector2
 #[derive(Clone, PartialEq, Debug)]
 pub struct Vector2 {
     pub x: f32,
     pub y: f32,
 }
 
-///A 2D Point with x and y coordinates: Point2
+/// A 2D Point with x and y coordinates: Point2
 #[derive(PartialEq, Debug, Clone)]
 pub struct Point2 {
     pub x: f32,
@@ -20,13 +18,13 @@ pub struct Point2 {
 }
 
 impl Vector2 {
-    ///Instantiates a new vector with to be defined values of x and y;
+    /// Instantiates a new vector with to be defined values of x and y;
     pub fn new(x: f32, y: f32) -> Vector2 {
         Vector2 { x: x, y: y }
     }
 
-    ///Instantiates a new Vector2 from 2 Point2 (initial position, final position).
-    ///The new vector is created as final - initial (Points)
+    /// Instantiates a new Vector2 from 2 Point2 (initial position, final position).
+    /// * The new vector is created as `final Point - initial Point`
     pub fn diff(origin: Point2, destination: Point2) -> Vector2 {
         Vector2 {
             x: destination.x - origin.x,
@@ -34,7 +32,7 @@ impl Vector2 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | 0 |
     /// // | 1 |
@@ -44,7 +42,7 @@ impl Vector2 {
         Vector2 { x: 0f32, y: 1f32 }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // |  0 |
     /// // | -1 |
@@ -54,7 +52,7 @@ impl Vector2 {
         Vector2 { x: 0f32, y: -1f32 }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | 1 |
     /// // | 0 |
@@ -64,7 +62,7 @@ impl Vector2 {
         Vector2 { x: 1f32, y: 0f32 }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | -1 |
     /// // |  0 |
@@ -81,7 +79,7 @@ impl Vector2 {
     /// ```
     ///
     /// ```
-    /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector}};
+    /// use mathf::{matrix::Matrix2x2, vector::{Vector2}};
     /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);
     /// let vec    = Vector2::new(4.0, 3.0);
     /// let offset = Vector2::new(5.0, 6.0);
@@ -93,39 +91,41 @@ impl Vector2 {
         (m * self) + vec
     }
 
-    ///Scales a Vector 2 in a non uniform way: (a, b * (x, y) = (ax, by)
+    /// Scales a Vector 2 in a non uniform way: (a, b * (x, y) = (ax, by)
     pub fn nonuniform_scale(self, a: f32, b: f32) -> Vector2 {
         let scale_matrix = M::new(Vector2::new(a, 0f32), Vector2::new(0f32, b));
         self.transform(scale_matrix, Vector2::ZERO())
     }
-}
 
-impl Vector for Vector2 {
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
+    /// All elements of the vector are `1`
     /// ```
     /// // | 1 |
     /// // | 1 |
     /// // x=1, y=1
     /// ```
-    fn ONE() -> Vector2 {
+    pub fn ONE() -> Vector2 {
         Vector2 { x: 1f32, y: 1f32 }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
+    /// All elements of the vector are `0`.
+    /// * Defines a modulus ZERO Vector (x=0, y=0)
     /// ```
     /// // | 0 |
     /// // | 0 |
     /// ```
-    ///Defines a modulus ZERO Vector (x=0, y=0)
-    fn ZERO() -> Vector2 {
+    pub fn ZERO() -> Vector2 {
         Vector2 { x: 0f32, y: 0f32 }
     }
 
-    fn magnitude(&self) -> f32 {
+    /// The square root of the sum of each vector part to the power of 2
+    pub fn magnitude(&self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2))
     }
 
-    fn to_vector(&self) -> Vec<f32> {
+    /// VectorN to Vec<f32>, N in (2, 3)
+    pub fn to_vector(&self) -> Vec<f32> {
         vec![self.x, self.y]
     }
 }
@@ -133,7 +133,7 @@ impl Vector for Vector2 {
 impl ops::Add for Vector2 {
     type Output = Vector2;
 
-    ///Implements the Vector2 '+' trait
+    /// Implements the Vector2 '+' trait
     fn add(self, new_vec: Vector2) -> Vector2 {
         Vector2 {
             x: self.x + new_vec.x,
@@ -145,7 +145,7 @@ impl ops::Add for Vector2 {
 impl ops::Add for &Vector2 {
     type Output = Vector2;
 
-    ///Implements the &Vector2 '+' trait
+    /// Implements the &Vector2 '+' trait
     fn add(self, new_vec: &Vector2) -> Vector2 {
         Vector2 {
             x: self.x + new_vec.x,
@@ -157,8 +157,7 @@ impl ops::Add for &Vector2 {
 impl ops::Mul<f32> for Vector2 {
     type Output = Vector2;
 
-    ///Implements the scalar multiplication of a Vector2 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar multiplication of a Vector2 with a f32. Other numbers should be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector2 {
         Vector2 {
             x: self.x * value,
@@ -170,8 +169,7 @@ impl ops::Mul<f32> for Vector2 {
 impl ops::Mul<f32> for &Vector2 {
     type Output = Vector2;
 
-    ///Implements the scalar multiplication of a &Vector2 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar multiplication of a &Vector2 with a f32. Other numbers should be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector2 {
         Vector2 {
             x: self.x * value,
@@ -183,8 +181,7 @@ impl ops::Mul<f32> for &Vector2 {
 impl ops::Div<f32> for Vector2 {
     type Output = Vector2;
 
-    ///Implements the scalar division of a Vector2 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar division of a Vector2 with a f32. Other numbers should be passed with 'i as f32'
     fn div(self, value: f32) -> Vector2 {
         Vector2 {
             x: self.x / value,
@@ -196,8 +193,7 @@ impl ops::Div<f32> for Vector2 {
 impl ops::Div<f32> for &Vector2 {
     type Output = Vector2;
 
-    ///Implements the scalar division of a &Vector2 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar division of a &Vector2 with a f32. Other numbers should be passed with 'i as f32'
     fn div(self, value: f32) -> Vector2 {
         Vector2 {
             x: self.x / value,
@@ -209,7 +205,7 @@ impl ops::Div<f32> for &Vector2 {
 impl ops::Mul<Vector2> for Vector2 {
     type Output = f32;
 
-    ///Implements the dot product of 2 Vector2 as '*'.
+    /// Implements the dot product of 2 Vector2 as '*'.
     fn mul(self, new_vec: Vector2) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y
     }
@@ -218,7 +214,7 @@ impl ops::Mul<Vector2> for Vector2 {
 impl ops::Mul<&Vector2> for &Vector2 {
     type Output = f32;
 
-    ///Implements the dot product of 2 &Vector2 as '*'.
+    /// Implements the dot product of 2 &Vector2 as '*'.
     fn mul(self, new_vec: &Vector2) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y
     }
@@ -227,7 +223,7 @@ impl ops::Mul<&Vector2> for &Vector2 {
 impl ops::Sub for Vector2 {
     type Output = Vector2;
 
-    ///Implements the Vector2 '-' trait
+    /// Implements the Vector2 '-' trait
     fn sub(self, new_vec: Vector2) -> Vector2 {
         Vector2 {
             x: self.x - new_vec.x,
@@ -239,7 +235,7 @@ impl ops::Sub for Vector2 {
 impl ops::Sub for &Vector2 {
     type Output = Vector2;
 
-    ///Implements the &Vector2 '-' trait
+    /// Implements the &Vector2 '-' trait
     fn sub(self, new_vec: &Vector2) -> Vector2 {
         Vector2 {
             x: self.x - new_vec.x,
@@ -249,24 +245,24 @@ impl ops::Sub for &Vector2 {
 }
 
 impl Point2 {
-    ///Instantiates a new Point2D with x and y.
+    /// Instantiates a new Point2D with x and y.
     pub fn new(x: f32, y: f32) -> Point2 {
         Point2 { x, y }
     }
 
-    ///Creates a new Vector2 relative to position (0, 0)
+    /// Creates a new Vector2 relative to position (0, 0)
     pub fn to_vec(&self) -> Vector2 {
         Vector2::diff(Point2::origin(), self.clone())
     }
 
-    ///Instantiates a Point2 with (0, 0)
-    fn origin() -> Point2 {
+    /// Instantiates a Point2 with (0, 0)
+    pub fn origin() -> Point2 {
         Point2::new(0f32, 0f32)
     }
 
-    #[allow(dead_code, non_snake_case)]
-    ///Instantiates a Point2 with (1, 1)
-    fn ONE() -> Point2 {
+    #[allow(non_snake_case)]
+    /// Instantiates a Point2 with (1, 1)
+    pub fn ONE() -> Point2 {
         Point2::new(1f32, 1f32)
     }
 
@@ -277,7 +273,7 @@ impl Point2 {
     /// ```
     ///
     /// ```
-    /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector, Point2}};
+    /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Point2}};
     /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);
     /// let point    = Point2::new(4.0, 3.0);
     /// let offset = Vector2::new(5.0, 6.0);
@@ -293,7 +289,7 @@ impl Point2 {
 impl ops::Add<Vector2> for Point2 {
     type Output = Point2;
 
-    ///Overloads + for Points and Vectors: P + PQ = Q
+    /// Overloads + for Points and Vectors: P + PQ = Q
     fn add(self, new_vec: Vector2) -> Point2 {
         Point2 {
             x: self.x + new_vec.x,
@@ -305,7 +301,7 @@ impl ops::Add<Vector2> for Point2 {
 impl ops::Mul<&Point2> for &Vector2 {
     type Output = f32;
 
-    ///Implements the dot product of &Point2 and &Vector2 as '*'.
+    /// Implements the dot product of &Point2 and &Vector2 as '*'.
     fn mul(self, new_vec: &Point2) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y
     }
@@ -319,7 +315,7 @@ impl PartialEq<Vector2> for Point2 {
 }
 
 #[allow(dead_code)]
-///Vector2 linear indenpendency (2D)
+/// Vector2 linear indenpendency (2D)
 pub fn lin_ind(vec1: &Vector2, vec2: &Vector2, delta: f32) -> bool {
     math_helper::float_eq(vec1 * vec2, 0f32, delta)
 }
@@ -340,7 +336,7 @@ pub fn sin(vec1: &Vector2, vec2: &Vector2) -> f32 {
 }
 
 #[allow(dead_code)]
-///Distance between 2 point2
+/// Distance between 2 point2
 pub fn dist(a: &Point2, b: &Point2) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
     let y_dist = (a.y - b.y).powi(2);
