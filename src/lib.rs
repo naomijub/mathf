@@ -16,6 +16,7 @@ pub mod vector {
         fn magnitude(&self) -> f32;
         /// VectorN to Vec<f32>, N in (2, 3)
         fn to_vector(&self) -> Vec<f32>;
+        // fn rotation_2d(&self, teta: f32) -> Self;
     }
 
     pub use vector2::Point2;
