@@ -1,6 +1,6 @@
 [package]
 name = "mathf"
-version = "0.1.12"
+version = "0.1.13"
 authors = ["Julia Naomi <jnboeira@outlook.com>"]
 description = "Math crate for Godi Game Engine"
 repository = "https://github.com/GodiStudios/mathf"

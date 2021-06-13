@@ -37,10 +37,12 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 0 |
-    /// | 1 |
-    /// | 0 |
-    /// y=1, x=0, z=0
+    /// ```
+    /// // | 0 |
+    /// // | 1 |
+    /// // | 0 |
+    /// // y=1, x=0, z=0
+    /// ```
     pub fn UP() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -50,10 +52,12 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// |  0 |
-    /// | -1 |
-    /// |  0 |
-    /// y=-1, x=0, z=0
+    /// ```
+    /// // |  0 |
+    /// // | -1 |
+    /// // |  0 |
+    /// // y=-1, x=0, z=0
+    /// ```
     pub fn DOWN() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -63,10 +67,12 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 1 |
-    /// | 0 |
-    /// | 0 |
-    /// y=0, x=1, z=0
+    /// ```
+    /// // | 1 |
+    /// // | 0 |
+    /// // | 0 |
+    /// // y=0, x=1, z=0
+    /// ```
     pub fn RIGHT() -> Vector3 {
         Vector3 {
             x: 1f32,
@@ -76,10 +82,12 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | -1 |
-    /// |  0 |
-    /// |  0 |
-    /// y=0, x=-1, z=0
+    /// ```
+    /// // | -1 |
+    /// // |  0 |
+    /// // |  0 |
+    /// // y=0, x=-1, z=0
+    /// ```
     pub fn LEFT() -> Vector3 {
         Vector3 {
             x: -1f32,
@@ -89,10 +97,12 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 0 |
-    /// | 0 |
-    /// | 1 |
-    /// y=0, x=0, z=1
+    /// ```
+    /// // | 0 |
+    /// // | 0 |
+    /// // | 1 |
+    /// // y=0, x=0, z=1
+    /// ```
     pub fn FOWARD() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -102,10 +112,12 @@ impl Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// |  0 |
-    /// |  0 |
-    /// | -1 |
-    /// y=0, x=0, z=-1
+    /// ```
+    /// // |  0 |
+    /// // |  0 |
+    /// // | -1 |
+    /// // y=0, x=0, z=-1
+    /// ```
     pub fn BACK() -> Vector3 {
         Vector3 {
             x: 0f32,
@@ -121,9 +133,11 @@ impl Vector3 {
     }
 
     ///Cross product between two vectors 3.
-    /// | a |   | m |   | do - gn |
-    /// | d | x | n | = | gm - ao |
-    /// | g |   | o |   | an - dm |
+    /// ```
+    /// // | a |   | m |   | do - gn |
+    /// // | d | x | n | = | gm - ao |
+    /// // | g |   | o |   | an - dm |
+    /// ```
     pub fn x(&self, vec: Vector3) -> Vector3 {
         Vector3 {
             x: self.y * vec.z - self.z * vec.y,
@@ -145,10 +159,12 @@ impl Vector3 {
 
 impl Vector for Vector3 {
     #[allow(dead_code, non_snake_case)]
-    /// | 1 |
-    /// | 1 |
-    /// | 1 |
-    ///x=1, y=1, z=1
+    /// ```
+    /// // | 1 |
+    /// // | 1 |
+    /// // | 1 |
+    /// // x=1, y=1, z=1
+    /// ```
     fn ONE() -> Vector3 {
         Vector3 {
             x: 1f32,
@@ -158,9 +174,11 @@ impl Vector for Vector3 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 0 |
-    /// | 0 |
-    /// | 0 |
+    /// ```
+    /// // | 0 |
+    /// // | 0 |
+    /// // | 0 |
+    /// ```
     ///Defines a Modulus ZERO Vector (x=0, y=0, z=0)
     fn ZERO() -> Vector3 {
         Vector3 {
