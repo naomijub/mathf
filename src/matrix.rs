@@ -49,16 +49,20 @@ pub trait Matrix {
     /// A matrix is orthogonal if and only if transpose(A) == inverse(A)
     fn is_orthogonal(&self) -> bool;
     /// Uniform scale matrix is determined as Uij / i==j => i = a ^ i!=j => i = 0
-    /// | a 0 0 |
-    /// | 0 a 0 |
-    /// | 0 0 a |
+    /// ```
+    /// // | a 0 0 |
+    /// // | 0 a 0 |
+    /// // | 0 0 a |
+    /// ```
     fn scale_matrix(a: f32) -> Self;
 }
 
 impl Matrix for Matrix3x3 {
-    /// | 1 0 0 |
-    /// | 0 1 0 |
-    /// | 0 0 1 |
+    /// ```
+    /// // | 1 0 0 |
+    /// // | 0 1 0 |
+    /// // | 0 0 1 |
+    /// ```
     fn IDENTITY() -> Self {
         Matrix3x3::new_idx(1f32, 0f32, 0f32, 0f32, 1f32, 0f32, 0f32, 0f32, 1f32)
     }
@@ -280,16 +284,20 @@ impl Matrix3x3 {
 }
 
 impl Matrix for Matrix2x2 {
-    /// | 1 0 |
-    /// | 0 1 |
+    /// ```
+    /// // | 1 0 |
+    /// // | 0 1 |
+    /// ```
     fn IDENTITY() -> Self {
         Matrix2x2::new_idx(1f32, 0f32, 0f32, 1f32)
     }
 
-    /// `               | 4 -3 |`
-    /// `let matrix =   | 0  2 |`
-
-    /// `matrix.det() = 2`
+    /// ```
+    /// //                | 4 -3 |
+    /// // let matrix =   | 0  2 |
+    /// 
+    /// // matrix.det() = 2
+    /// ```
     ///
     /// ```
     /// use mathf::matrix::{Matrix, Matrix2x2};
@@ -301,10 +309,12 @@ impl Matrix for Matrix2x2 {
         self.r1.x * self.r2.y - self.r1.y * self.r2.x
     }
 
-    /// `               | 4 -3 |`
-    /// `let matrix =   | 0  2 |`
+    /// ```
+    /// //                | 4 -3 |`
+    /// // let matrix =   | 0  2 |`
 
-    /// `matrix.det() = 2`
+    /// // matrix.det() = 2
+    /// ```
     ///
     /// ```
     /// use mathf::matrix::{Matrix, Matrix2x2};
@@ -327,11 +337,13 @@ impl Matrix for Matrix2x2 {
         Matrix2x2::new_idx(self.r1.x, self.r2.x, self.r1.y, self.r2.y)
     }
 
-    /// `               | 4 7 |`
-    /// `let matrix =   | 2 6 |`
-    ///
-    /// `                            |  6 -7 |`
-    /// `let matrix_inverse =  1/10  | -2  4 |`
+    /// ```
+    /// //                | 4 7 |
+    /// // let matrix =   | 2 6 |
+    /// //
+    /// //                             |  6 -7 |
+    /// // let matrix_inverse =  1/10  | -2  4 |
+    /// ```
     ///
     /// ```
     /// use mathf::matrix::{Matrix, Matrix2x2};
@@ -387,8 +399,10 @@ impl Matrix2x2 {
 
     /// 2D rotation Matrix by angle teta (radians)
     /// For matrix 2x2:
-    /// P′= | cosθ − sinθ | P
-    ///     | sinθ + cosθ |
+    /// ```
+    /// // P′= | cosθ − sinθ | P
+    /// //     | sinθ + cosθ |
+    /// ```
     pub fn rotation_2d(teta: f32) -> Self {
         let (sin, cos) = teta.sin_cos();
         Matrix2x2::new_idx(cos, -sin, sin, cos)

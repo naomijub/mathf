@@ -35,40 +35,51 @@ impl Vector2 {
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 0 |
-    /// | 1 |
-    /// y=1, x=0
+    /// ```
+    /// // | 0 |
+    /// // | 1 |
+    /// // y=1, x=0
+    /// ```
     pub fn UP() -> Vector2 {
         Vector2 { x: 0f32, y: 1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// |  0 |
-    /// | -1 |
-    /// y=-1, x=0
+    /// ```
+    /// // |  0 |
+    /// // | -1 |
+    /// // y=-1, x=0
+    /// ```
     pub fn DOWN() -> Vector2 {
         Vector2 { x: 0f32, y: -1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 1 |
-    /// | 0 |
-    /// y=0, x=1
+    /// ```
+    /// // | 1 |
+    /// // | 0 |
+    /// // y=0, x=1
+    /// ```
     pub fn RIGHT() -> Vector2 {
         Vector2 { x: 1f32, y: 0f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | -1 |
-    /// |  0 |
-    /// y=0, x=-1
+    /// ```
+    /// // | -1 |
+    /// // |  0 |
+    /// // y=0, x=-1
+    /// ```
     pub fn LEFT() -> Vector2 {
         Vector2 { x: -1f32, y: 0f32 }
     }
 
     /// Transforms a Vector 2 from one vectorspace to another via a matrix2x2 transform
-    /// `| 3 1 |   | 4 |   | 5 |   | 20 |`
-    /// `| 5 7 | * | 3 | + | 6 | = | 47 |`
+    /// ```
+    /// // | 3 1 |   | 4 |   | 5 |   | 20 |
+    /// // | 5 7 | * | 3 | + | 6 | = | 47 |
+    /// ```
+    ///
     /// ```
     /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector}};
     /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);
@@ -91,16 +102,20 @@ impl Vector2 {
 
 impl Vector for Vector2 {
     #[allow(dead_code, non_snake_case)]
-    /// | 1 |
-    /// | 1 |
-    /// x=1, y=1
+    /// ```
+    /// // | 1 |
+    /// // | 1 |
+    /// // x=1, y=1
+    /// ```
     fn ONE() -> Vector2 {
         Vector2 { x: 1f32, y: 1f32 }
     }
 
     #[allow(dead_code, non_snake_case)]
-    /// | 0 |
-    /// | 0 |
+    /// ```
+    /// // | 0 |
+    /// // | 0 |
+    /// ```
     ///Defines a modulus ZERO Vector (x=0, y=0)
     fn ZERO() -> Vector2 {
         Vector2 { x: 0f32, y: 0f32 }
@@ -256,8 +271,11 @@ impl Point2 {
     }
 
     /// Transforms a Point2 2 from one vectorspace to another via a matrix2x2 transform
-    /// `| 3 1 |   | 4 |   | 5 |   | 20 |`
-    /// `| 5 7 | * | 3 | + | 6 | = | 47 |`
+    /// ```
+    /// // | 3 1 |   | 4 |   | 5 |   | 20 |
+    /// // | 5 7 | * | 3 | + | 6 | = | 47 |
+    /// ```
+    /// 
     /// ```
     /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector, Point2}};
     /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);
