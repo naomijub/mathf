@@ -275,7 +275,7 @@ impl Point2 {
     /// // | 3 1 |   | 4 |   | 5 |   | 20 |
     /// // | 5 7 | * | 3 | + | 6 | = | 47 |
     /// ```
-    /// 
+    ///
     /// ```
     /// use mathf::{matrix::Matrix2x2, vector::{Vector2, Vector, Point2}};
     /// let matrix = Matrix2x2::new_idx(3.0, 1.0, 5.0, 7.0);

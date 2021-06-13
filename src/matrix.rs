@@ -295,7 +295,7 @@ impl Matrix for Matrix2x2 {
     /// ```
     /// //                | 4 -3 |
     /// // let matrix =   | 0  2 |
-    /// 
+    ///
     /// // matrix.det() = 2
     /// ```
     ///
