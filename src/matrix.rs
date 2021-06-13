@@ -255,18 +255,20 @@ impl Matrix3x3 {
     }
 
     /// 2D rotation Matrix by angle teta (radians) over RotationAxis { X, Y, Z }
-    /// Matrix (Z) 3x3:
-    ///       | cosθ −sinθ 0 |
-    /// Rz(θ)=| sinθ  cosθ 0 |
-    ///       |    0     0 1 |
-    /// Matrix (X) 3x3:
-    ///       | 1    0     0 |
-    /// Rx(θ)=| 0 cosθ −sinθ |
-    ///       | 0 sinθ  cosθ |
-    /// Matrix (Y) 3x3:
-    ///       | cosθ 0 -sinθ |
-    /// Ry(θ)=|    0 1     0 |
-    ///       | sinθ 0  cosθ |
+    /// ```
+    /// // Matrix (Z) 3x3:
+    /// //       | cosθ −sinθ 0 |
+    /// // Rz(θ)=| sinθ  cosθ 0 |
+    /// //       |    0     0 1 |
+    /// // Matrix (X) 3x3:
+    /// //       | 1    0     0 |
+    /// // Rx(θ)=| 0 cosθ −sinθ |
+    /// //       | 0 sinθ  cosθ |
+    /// // Matrix (Y) 3x3:
+    /// //       | cosθ 0 -sinθ |
+    /// // Ry(θ)=|    0 1     0 |
+    /// //       | sinθ 0  cosθ |
+    /// ```
     pub fn rotation_2d(teta: f32, rotation_axis: RotationAxis) -> Self {
         let (sin, cos) = teta.sin_cos();
         match rotation_axis {
