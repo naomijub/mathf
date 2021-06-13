@@ -40,7 +40,13 @@ pub trait Matrix {
     fn inverse(&self, delta: f32) -> Result<Self, Error>
     where
         Self: Sized;
+    /// A matrix is orthogonal if and only if transpose(A) == inverse(A)
     fn is_orthogonal(&self) -> bool;
+    /// Uniform scale matrix is determined as Uij / i==j => i = a ^ i!=j => i = 0
+    /// | a 0 0 |
+    /// | 0 a 0 |
+    /// | 0 0 a |
+    fn scale_matrix(a: f32) -> Self;
 }
 
 impl Matrix for Matrix3x3 {
@@ -150,6 +156,10 @@ impl Matrix for Matrix3x3 {
             false
         }
     }
+
+    fn scale_matrix(a: f32) -> Self {
+        Matrix3x3::IDENTITY() * a
+    }
 }
 
 impl Matrix3x3 {
@@ -228,6 +238,10 @@ impl Matrix3x3 {
             -elements3[1],
             elements3[2],
         )
+    }
+
+    pub fn scale_matrix_non_uniform(a: f32, b: f32, c: f32) -> Self {
+        Matrix3x3::new_idx(a, 0f32, 0f32, 0f32, b, 0f32, 0f32, 0f32, c)
     }
 }
 
@@ -313,6 +327,10 @@ impl Matrix for Matrix2x2 {
             false
         }
     }
+
+    fn scale_matrix(a: f32) -> Self {
+        Matrix2x2::IDENTITY() * a
+    }
 }
 
 impl Matrix2x2 {
@@ -327,6 +345,10 @@ impl Matrix2x2 {
             r1: Vector2::new(n1, n2),
             r2: Vector2::new(n3, n4),
         }
+    }
+
+    pub fn scale_matrix_non_uniform(a: f32, b: f32) -> Self {
+        Matrix2x2::new_idx(a, 0f32, 0f32, b)
     }
 }
 
@@ -804,6 +826,22 @@ mod tests_matrix3x3 {
         let identity_4 = 4f32 * &Matrix3x3::IDENTITY();
         assert_eq!(64f32, identity_4.det());
     }
+
+    #[test]
+    fn uniform_scale() {
+        let matrix = Matrix3x3::scale_matrix(4f32);
+        let expected = Matrix3x3::new_idx(4f32, 0f32, 0f32, 0f32, 4f32, 0f32, 0f32, 0f32, 4f32);
+
+        assert_eq!(matrix, expected);
+    }
+
+    #[test]
+    fn non_uniform_scale() {
+        let matrix = Matrix3x3::scale_matrix_non_uniform(4f32, 5f32, 6f32);
+        let expected = Matrix3x3::new_idx(4f32, 0f32, 0f32, 0f32, 5f32, 0f32, 0f32, 0f32, 6f32);
+
+        assert_eq!(matrix, expected);
+    }
 }
 
 #[cfg(test)]
@@ -948,6 +986,22 @@ mod tests_matrix2x2 {
     fn orthogonal() {
         let matrix = Matrix2x2::new_idx(1.0, 0.0, 0.0, -1.0);
         assert!(matrix.is_orthogonal())
+    }
+
+    #[test]
+    fn uniform_scale() {
+        let matrix = Matrix2x2::scale_matrix(4f32);
+        let expected = Matrix2x2::new_idx(4f32, 0f32, 0f32, 4f32);
+
+        assert_eq!(matrix, expected);
+    }
+
+    #[test]
+    fn non_uniform_scale() {
+        let matrix = Matrix2x2::scale_matrix_non_uniform(4f32, 5f32);
+        let expected = Matrix2x2::new_idx(4f32, 0f32, 0f32, 5f32);
+
+        assert_eq!(matrix, expected);
     }
 }
 
