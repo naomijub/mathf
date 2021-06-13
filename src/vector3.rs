@@ -1,10 +1,9 @@
 use crate::math_helper;
-use crate::vector::Vector;
+use crate::matrix::Matrix3x3 as M;
 
-use super::matrix::Matrix3x3 as M;
 use std::ops;
 
-///A 3D Vector with x, y, z coordinates: Vector3
+/// A 3D Vector with x, y, z coordinates: Vector3
 #[derive(Clone, PartialEq, Debug)]
 pub struct Vector3 {
     pub x: f32,
@@ -12,7 +11,7 @@ pub struct Vector3 {
     pub z: f32,
 }
 
-///A 3D Point with x, y and z coordinates: Point3
+/// A 3D Point with x, y and z coordinates: Point3
 #[derive(PartialEq, Debug)]
 pub struct Point3 {
     pub x: f32,
@@ -21,13 +20,13 @@ pub struct Point3 {
 }
 
 impl Vector3 {
-    ///Instantiates a new vector with to be defined values of x, y, z;
+    /// Instantiates a new vector with to be defined values of x, y, z;
     pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
         Vector3 { x: x, y: y, z: z }
     }
 
-    ///Instantiates a new Vector3 from 2 Point3 (initial position, final position).
-    ///The new vector is created as final - initial (Points)
+    /// Instantiates a new Vector3 from 2 Point3 (initial position, final position).
+    /// * The new vector is created as `final Point - initial Point`
     pub fn diff(origin: Point3, destination: &Point3) -> Vector3 {
         Vector3 {
             x: destination.x - origin.x,
@@ -36,7 +35,7 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | 0 |
     /// // | 1 |
@@ -51,7 +50,7 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // |  0 |
     /// // | -1 |
@@ -66,7 +65,7 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | 1 |
     /// // | 0 |
@@ -81,7 +80,7 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | -1 |
     /// // |  0 |
@@ -96,7 +95,7 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // | 0 |
     /// // | 0 |
@@ -111,7 +110,7 @@ impl Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
     /// ```
     /// // |  0 |
     /// // |  0 |
@@ -126,13 +125,13 @@ impl Vector3 {
         }
     }
 
-    ///Transforms a Vector 3 from one vectorspace to another  via a matrix3x3 transform.
-    /// Same as Vector2 but with Matrix3x3 and Vector3.
+    /// Transforms a Vector 3 from one vectorspace to another  via a matrix3x3 transform.
+    /// * Same as Vector2 but with Matrix3x3 and Vector3.
     pub fn transform(&self, m: M, vec: Vector3) -> Vector3 {
         (m * self) + vec
     }
 
-    ///Cross product between two vectors 3.
+    /// Cross product between two vectors 3.
     /// ```
     /// // | a |   | m |   | do - gn |
     /// // | d | x | n | = | gm - ao |
@@ -146,7 +145,7 @@ impl Vector3 {
         }
     }
 
-    ///Scales a Vector 3 in a non uniform way: (a, b, c) * (x, y, z) = (ax, by, cz)
+    /// Scales a Vector 3 in a non uniform way: (a, b, c) * (x, y, z) = (ax, by, cz)
     pub fn nonuniform_scale(&self, a: f32, b: f32, c: f32) -> Vector3 {
         let scale_matrix = M::new(
             Vector3::new(a, 0f32, 0f32),
@@ -155,17 +154,16 @@ impl Vector3 {
         );
         self.transform(scale_matrix, Vector3::ZERO())
     }
-}
 
-impl Vector for Vector3 {
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
+    /// All elements of the vector are `1`
     /// ```
     /// // | 1 |
     /// // | 1 |
     /// // | 1 |
     /// // x=1, y=1, z=1
     /// ```
-    fn ONE() -> Vector3 {
+    pub fn ONE() -> Vector3 {
         Vector3 {
             x: 1f32,
             y: 1f32,
@@ -173,14 +171,15 @@ impl Vector for Vector3 {
         }
     }
 
-    #[allow(dead_code, non_snake_case)]
+    #[allow(non_snake_case)]
+    /// All elements of the vector are `0`
+    /// * Defines a Modulus ZERO Vector (x=0, y=0, z=0)
     /// ```
     /// // | 0 |
     /// // | 0 |
     /// // | 0 |
     /// ```
-    ///Defines a Modulus ZERO Vector (x=0, y=0, z=0)
-    fn ZERO() -> Vector3 {
+    pub fn ZERO() -> Vector3 {
         Vector3 {
             x: 0f32,
             y: 0f32,
@@ -188,13 +187,13 @@ impl Vector for Vector3 {
         }
     }
 
-    ///Vector magnitude: the square root of the sum of each vector part to the power of 2
-    fn magnitude(&self) -> f32 {
+    /// Vector magnitude: the square root of the sum of each vector part to the power of 2
+    pub fn magnitude(&self) -> f32 {
         f32::sqrt(self.x.powi(2) + self.y.powi(2) + self.z.powi(2))
     }
 
-    ///Transforms a Vector3 into a Vec<f32>
-    fn to_vector(&self) -> Vec<f32> {
+    /// Transforms a Vector3 into a Vec<f32>
+    pub fn to_vector(&self) -> Vec<f32> {
         vec![self.x, self.y, self.z]
     }
 }
@@ -202,7 +201,7 @@ impl Vector for Vector3 {
 impl ops::Add for Vector3 {
     type Output = Vector3;
 
-    ///Implements the Vector3 '+' trait
+    /// Implements the Vector3 '+' trait
     fn add(self, new_vec: Vector3) -> Vector3 {
         Vector3 {
             x: self.x + new_vec.x,
@@ -215,7 +214,7 @@ impl ops::Add for Vector3 {
 impl ops::Add for &Vector3 {
     type Output = Vector3;
 
-    ///Implements the &Vector3 '+' trait
+    /// Implements the &Vector3 '+' trait
     fn add(self, new_vec: &Vector3) -> Vector3 {
         Vector3 {
             x: self.x + new_vec.x,
@@ -228,8 +227,7 @@ impl ops::Add for &Vector3 {
 impl ops::Mul<f32> for Vector3 {
     type Output = Vector3;
 
-    ///Implements the scalar multiplication of a Vector3 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar multiplication of a Vector3 with a f32. Other numbers should be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector3 {
         Vector3 {
             x: self.x * value,
@@ -242,8 +240,7 @@ impl ops::Mul<f32> for Vector3 {
 impl ops::Mul<f32> for &Vector3 {
     type Output = Vector3;
 
-    ///Implements the scalar multiplication of a &Vector3 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar multiplication of a &Vector3 with a f32. Other numbers should be passed with 'i as f32'
     fn mul(self, value: f32) -> Vector3 {
         Vector3 {
             x: self.x * value,
@@ -256,8 +253,7 @@ impl ops::Mul<f32> for &Vector3 {
 impl ops::Div<f32> for Vector3 {
     type Output = Vector3;
 
-    ///Implements the scalar division of a Vector3 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar division of a Vector3 with a f32. Other numbers should be passed with 'i as f32'
     fn div(self, value: f32) -> Vector3 {
         Vector3 {
             x: self.x / value,
@@ -270,8 +266,7 @@ impl ops::Div<f32> for Vector3 {
 impl ops::Div<f32> for &Vector3 {
     type Output = Vector3;
 
-    ///Implements the scalar division of a &Vector3 with a f32. Other numbers should
-    ///be passed with 'i as f32'
+    /// Implements the scalar division of a &Vector3 with a f32. Other numbers should be passed with 'i as f32'
     fn div(self, value: f32) -> Vector3 {
         Vector3 {
             x: self.x / value,
@@ -284,7 +279,7 @@ impl ops::Div<f32> for &Vector3 {
 impl ops::Mul<Vector3> for Vector3 {
     type Output = f32;
 
-    ///Implements the dot product of 2 Vector3 as '*'.
+    /// Implements the dot product of 2 Vector3 as '*'.
     fn mul(self, new_vec: Vector3) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
     }
@@ -293,7 +288,7 @@ impl ops::Mul<Vector3> for Vector3 {
 impl ops::Mul<&Vector3> for &Vector3 {
     type Output = f32;
 
-    ///Implements the dot product of 2 &Vector3 as '*'.
+    /// Implements the dot product of 2 &Vector3 as '*'.
     fn mul(self, new_vec: &Vector3) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
     }
@@ -302,7 +297,7 @@ impl ops::Mul<&Vector3> for &Vector3 {
 impl ops::Sub for Vector3 {
     type Output = Vector3;
 
-    ///Implements the Vector3 '-' trait
+    /// Implements the Vector3 '-' trait
     fn sub(self, new_vec: Vector3) -> Vector3 {
         Vector3 {
             x: self.x - new_vec.x,
@@ -315,7 +310,7 @@ impl ops::Sub for Vector3 {
 impl ops::Sub for &Vector3 {
     type Output = Vector3;
 
-    ///Implements the &Vector3 '-' trait
+    /// Implements the &Vector3 '-' trait
     fn sub(self, new_vec: &Vector3) -> Vector3 {
         Vector3 {
             x: self.x - new_vec.x,
@@ -326,28 +321,28 @@ impl ops::Sub for &Vector3 {
 }
 
 impl Point3 {
-    ///Instantiates a new Point3 with x, y and z.
+    /// Instantiates a new Point3 with x, y and z.
     pub fn new(x: f32, y: f32, z: f32) -> Point3 {
         Point3 { x: x, y: y, z: z }
     }
 
-    ///Creates a new Vector3 relative to position (0, 0, 0)
+    /// Creates a new Vector3 relative to position (0, 0, 0)
     pub fn to_vec(&self) -> Vector3 {
         Vector3::diff(Point3::origin(), self)
     }
 
-    ///Instantiates a Point3 with (0, 0, 0)
-    fn origin() -> Point3 {
+    /// Instantiates a Point3 with (0, 0, 0)
+    pub fn origin() -> Point3 {
         Point3::new(0f32, 0f32, 0f32)
     }
 
-    #[allow(dead_code, non_snake_case)]
-    ///Instantiates a Point3 with (1, 1, 1)
-    fn ONE() -> Point3 {
+    #[allow(non_snake_case)]
+    /// Instantiates a Point3 with (1, 1, 1)
+    pub fn ONE() -> Point3 {
         Point3::new(1f32, 1f32, 1f32)
     }
 
-    ///Transforms a Point 3 from one vectorspace to another  via a matrix3x3 transform.
+    /// Transforms a Point 3 from one vectorspace to another  via a matrix3x3 transform.
     /// Same as Point2 but with Point3, Matrix3x3 and Vector3.
     pub fn transform(&self, m: M, vec: Vector3) -> Point3 {
         (m * self) + vec
@@ -357,7 +352,7 @@ impl Point3 {
 impl ops::Add<Vector3> for Point3 {
     type Output = Point3;
 
-    ///Overloads + for Points and Vectors: P + PQ = Q
+    /// Overloads + for Points and Vectors: P + PQ = Q
     fn add(self, new_vec: Vector3) -> Point3 {
         Point3 {
             x: self.x + new_vec.x,
@@ -370,7 +365,7 @@ impl ops::Add<Vector3> for Point3 {
 impl ops::Mul<&Point3> for &Vector3 {
     type Output = f32;
 
-    ///Implements the dot product of &Point3 and &Vector3 as '*'.
+    /// Implements the dot product of &Point3 and &Vector3 as '*'.
     fn mul(self, new_vec: &Point3) -> f32 {
         self.x * new_vec.x + self.y * new_vec.y + self.z * new_vec.z
     }
@@ -399,7 +394,7 @@ impl Index<usize> for Vector3 {
 }
 
 #[allow(dead_code)]
-///Vector3 linear indenpendency (3D)
+/// Vector3 linear indenpendency (3D)
 pub fn lin_ind(vec1: &Vector3, vec2: &Vector3, vec3: &Vector3, delta: f32) -> bool {
     let dot1 = vec1 * vec2;
     let dot2 = vec1 * vec3;
@@ -425,7 +420,7 @@ pub fn sin(vec1: &Vector3, vec2: &Vector3) -> f32 {
 }
 
 #[allow(dead_code)]
-///Distance between 2 point3
+/// Distance between 2 point3
 pub fn dist(a: &Point3, b: &Point3) -> f32 {
     let x_dist = (a.x - b.x).powi(2);
     let y_dist = (a.y - b.y).powi(2);
