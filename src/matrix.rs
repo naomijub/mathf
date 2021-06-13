@@ -24,6 +24,12 @@ pub struct Matrix2x2 {
     pub r2: Vector2,
 }
 
+pub enum RotationAxis {
+    X,
+    Y,
+    Z,
+}
+
 pub trait Matrix {
     #[allow(non_snake_case)]
     /// Identity Matrrix NxN, where all elements Uij that i = j are `1`
@@ -40,6 +46,13 @@ pub trait Matrix {
     fn inverse(&self, delta: f32) -> Result<Self, Error>
     where
         Self: Sized;
+    /// A matrix is orthogonal if and only if transpose(A) == inverse(A)
+    fn is_orthogonal(&self) -> bool;
+    /// Uniform scale matrix is determined as Uij / i==j => i = a ^ i!=j => i = 0
+    /// | a 0 0 |
+    /// | 0 a 0 |
+    /// | 0 0 a |
+    fn scale_matrix(a: f32) -> Self;
 }
 
 impl Matrix for Matrix3x3 {
@@ -140,6 +153,19 @@ impl Matrix for Matrix3x3 {
         let traspose = cofactor_matrix.transpose();
         Ok(traspose / modulus)
     }
+
+    fn is_orthogonal(&self) -> bool {
+        let inv = self.inverse(0.0001);
+        if inv.is_ok() {
+            self.transpose() == inv.unwrap()
+        } else {
+            false
+        }
+    }
+
+    fn scale_matrix(a: f32) -> Self {
+        Matrix3x3::IDENTITY() * a
+    }
 }
 
 impl Matrix3x3 {
@@ -219,6 +245,38 @@ impl Matrix3x3 {
             elements3[2],
         )
     }
+
+    pub fn scale_matrix_non_uniform(a: f32, b: f32, c: f32) -> Self {
+        Matrix3x3::new_idx(a, 0f32, 0f32, 0f32, b, 0f32, 0f32, 0f32, c)
+    }
+
+    /// 2D rotation Matrix by angle teta (radians) over RotationAxis { X, Y, Z }
+    /// Matrix (Z) 3x3:
+    ///       | cosθ −sinθ 0 |
+    /// Rz(θ)=| sinθ  cosθ 0 |
+    ///       |    0     0 1 |
+    /// Matrix (X) 3x3:
+    ///       | 1    0     0 |
+    /// Rx(θ)=| 0 cosθ −sinθ |
+    ///       | 0 sinθ  cosθ |
+    /// Matrix (Y) 3x3:
+    ///       | cosθ 0 -sinθ |
+    /// Ry(θ)=|    0 1     0 |
+    ///       | sinθ 0  cosθ |
+    pub fn rotation_2d(teta: f32, rotation_axis: RotationAxis) -> Self {
+        let (sin, cos) = teta.sin_cos();
+        match rotation_axis {
+            RotationAxis::X => {
+                Matrix3x3::new_idx(1f32, 0f32, 0f32, 0f32, cos, -sin, 0f32, sin, cos)
+            }
+            RotationAxis::Y => {
+                Matrix3x3::new_idx(cos, 0f32, -sin, 0f32, 1f32, 0f32, sin, 0f32, cos)
+            }
+            RotationAxis::Z => {
+                Matrix3x3::new_idx(cos, -sin, 0f32, sin, cos, 0f32, 0f32, 0f32, 1f32)
+            }
+        }
+    }
 }
 
 impl Matrix for Matrix2x2 {
@@ -294,6 +352,19 @@ impl Matrix for Matrix2x2 {
             ))
         }
     }
+
+    fn is_orthogonal(&self) -> bool {
+        let inv = self.inverse(0.0001);
+        if inv.is_ok() {
+            self.transpose() == inv.unwrap()
+        } else {
+            false
+        }
+    }
+
+    fn scale_matrix(a: f32) -> Self {
+        Matrix2x2::IDENTITY() * a
+    }
 }
 
 impl Matrix2x2 {
@@ -308,6 +379,19 @@ impl Matrix2x2 {
             r1: Vector2::new(n1, n2),
             r2: Vector2::new(n3, n4),
         }
+    }
+
+    pub fn scale_matrix_non_uniform(a: f32, b: f32) -> Self {
+        Matrix2x2::new_idx(a, 0f32, 0f32, b)
+    }
+
+    /// 2D rotation Matrix by angle teta (radians)
+    /// For matrix 2x2:
+    /// P′= | cosθ − sinθ | P
+    ///     | sinθ + cosθ |
+    pub fn rotation_2d(teta: f32) -> Self {
+        let (sin, cos) = teta.sin_cos();
+        Matrix2x2::new_idx(cos, -sin, sin, cos)
     }
 }
 
@@ -483,6 +567,31 @@ impl ops::Mul<&Matrix3x3> for f32 {
     }
 }
 
+impl ops::Mul<Matrix3x3> for Matrix3x3 {
+    type Output = Matrix3x3;
+
+    ///Implements the Matrix 2x2 '*' trait for `Matrix3x3 * Matrix3x3`
+    fn mul(self, m: Matrix3x3) -> Matrix3x3 {
+        Matrix3x3::new(
+            Vector3::new(
+                self.r1.x * m.r1.x + self.r1.y * m.r2.x + self.r1.z * m.r3.x,
+                self.r1.x * m.r1.y + self.r1.y * m.r2.y + self.r1.z * m.r3.y,
+                self.r1.x * m.r1.z + self.r1.y * m.r2.z + self.r1.z * m.r3.z,
+            ),
+            Vector3::new(
+                self.r2.x * m.r1.x + self.r2.y * m.r2.x + self.r2.z * m.r3.x,
+                self.r2.x * m.r1.y + self.r2.y * m.r2.y + self.r2.z * m.r3.y,
+                self.r2.x * m.r1.z + self.r2.y * m.r2.z + self.r2.z * m.r3.z,
+            ),
+            Vector3::new(
+                self.r3.x * m.r1.x + self.r3.y * m.r2.x + self.r3.z * m.r3.x,
+                self.r3.x * m.r1.y + self.r3.y * m.r2.y + self.r3.z * m.r3.y,
+                self.r3.x * m.r1.z + self.r3.y * m.r2.z + self.r3.z * m.r3.z,
+            ),
+        )
+    }
+}
+
 impl ops::Div<f32> for Matrix3x3 {
     type Output = Matrix3x3;
 
@@ -577,6 +686,24 @@ impl ops::Mul<&Matrix2x2> for f32 {
         Matrix2x2::new(
             Vector2::new(m.r1.x * self, m.r1.y * self),
             Vector2::new(m.r2.x * self, m.r2.y * self),
+        )
+    }
+}
+
+impl ops::Mul<Matrix2x2> for Matrix2x2 {
+    type Output = Matrix2x2;
+
+    ///Implements the Matrix 2x2 '*' trait for `Matrix2x2 * Matrix2x2`
+    fn mul(self, m: Matrix2x2) -> Matrix2x2 {
+        Matrix2x2::new(
+            Vector2::new(
+                self.r1.x * m.r1.x + self.r1.y * m.r2.x,
+                self.r1.x * m.r1.y + self.r1.y * m.r2.y,
+            ),
+            Vector2::new(
+                self.r2.x * m.r1.x + self.r2.y * m.r2.x,
+                self.r2.x * m.r1.y + self.r2.y * m.r2.y,
+            ),
         )
     }
 }
@@ -785,6 +912,123 @@ mod tests_matrix3x3 {
         let identity_4 = 4f32 * &Matrix3x3::IDENTITY();
         assert_eq!(64f32, identity_4.det());
     }
+
+    #[test]
+    fn uniform_scale() {
+        let matrix = Matrix3x3::scale_matrix(4f32);
+        let expected = Matrix3x3::new_idx(4f32, 0f32, 0f32, 0f32, 4f32, 0f32, 0f32, 0f32, 4f32);
+
+        assert_eq!(matrix, expected);
+    }
+
+    #[test]
+    fn non_uniform_scale() {
+        let matrix = Matrix3x3::scale_matrix_non_uniform(4f32, 5f32, 6f32);
+        let expected = Matrix3x3::new_idx(4f32, 0f32, 0f32, 0f32, 5f32, 0f32, 0f32, 0f32, 6f32);
+
+        assert_eq!(matrix, expected);
+    }
+
+    #[test]
+    fn rotation_2d_z() {
+        let pi_quarters = 0.78539816f32;
+        let rotation_matrix = Matrix3x3::rotation_2d(pi_quarters, RotationAxis::Z);
+        let expect = Matrix3x3 {
+            r1: Vector3 {
+                x: 0.70710677,
+                y: -0.70710677,
+                z: 0.0,
+            },
+            r2: Vector3 {
+                x: 0.70710677,
+                y: 0.70710677,
+                z: 0.0,
+            },
+            r3: Vector3 {
+                x: 0.0,
+                y: 0.0,
+                z: 1.0,
+            },
+        };
+
+        assert_eq!(rotation_matrix, expect);
+    }
+
+    #[test]
+    fn rotation_2d_x() {
+        let pi_quarters = 0.78539816f32;
+        let rotation_matrix = Matrix3x3::rotation_2d(pi_quarters, RotationAxis::X);
+        let expect = Matrix3x3 {
+            r1: Vector3 {
+                x: 1.0,
+                y: 0.0,
+                z: 0.0,
+            },
+            r2: Vector3 {
+                x: 0.0,
+                y: 0.70710677,
+                z: -0.70710677,
+            },
+            r3: Vector3 {
+                x: 0.0,
+                y: 0.70710677,
+                z: 0.70710677,
+            },
+        };
+
+        assert_eq!(rotation_matrix, expect);
+    }
+
+    #[test]
+    fn rotation_2d_y() {
+        let pi_quarters = 0.78539816f32;
+        let rotation_matrix = Matrix3x3::rotation_2d(pi_quarters, RotationAxis::Y);
+        let expect = Matrix3x3 {
+            r1: Vector3 {
+                x: 0.70710677,
+                y: 0.0,
+                z: -0.70710677,
+            },
+            r2: Vector3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            r3: Vector3 {
+                x: 0.70710677,
+                y: 0.0,
+                z: 0.70710677,
+            },
+        };
+
+        assert_eq!(rotation_matrix, expect);
+    }
+
+    #[test]
+    fn matrix_multiplication() {
+        let pi_quarters = 0.78539816f32;
+        let rotation_matrix = Matrix3x3::rotation_2d(pi_quarters, RotationAxis::Z);
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 9f32);
+        let expect = Matrix3x3 {
+            r1: Vector3 {
+                x: -2.1213202,
+                y: -2.1213202,
+                z: -2.1213202,
+            },
+            r2: Vector3 {
+                x: 3.535534,
+                y: 4.9497476,
+                z: 6.3639607,
+            },
+            r3: Vector3 {
+                x: 7.0,
+                y: 8.0,
+                z: 9.0,
+            },
+        };
+
+        assert_eq!(rotation_matrix * matrix, expect);
+    }
 }
 
 #[cfg(test)]
@@ -924,6 +1168,51 @@ mod tests_matrix2x2 {
         let expected = Matrix2x2::new_idx(1f32, 3f32, 2f32, 4f32);
         assert_eq!(expected, matrix.transpose());
     }
+
+    #[test]
+    fn orthogonal() {
+        let matrix = Matrix2x2::new_idx(1.0, 0.0, 0.0, -1.0);
+        assert!(matrix.is_orthogonal())
+    }
+
+    #[test]
+    fn not_orthogonal() {
+        let matrix = Matrix2x2::new_idx(1.0, 1.0, 1.0, 1.0);
+        assert!(!matrix.is_orthogonal())
+    }
+
+    #[test]
+    fn uniform_scale() {
+        let matrix = Matrix2x2::scale_matrix(4f32);
+        let expected = Matrix2x2::new_idx(4f32, 0f32, 0f32, 4f32);
+
+        assert_eq!(matrix, expected);
+    }
+
+    #[test]
+    fn non_uniform_scale() {
+        let matrix = Matrix2x2::scale_matrix_non_uniform(4f32, 5f32);
+        let expected = Matrix2x2::new_idx(4f32, 0f32, 0f32, 5f32);
+
+        assert_eq!(matrix, expected);
+    }
+
+    #[test]
+    fn rotation_2d() {
+        let pi_quarters = 0.78539816f32;
+        let matrix_rot_2d = Matrix2x2::rotation_2d(pi_quarters);
+        let expected = Matrix2x2::new_idx(0.70710677, -0.70710677, 0.70710677, 0.70710677);
+        assert_eq!(matrix_rot_2d, expected)
+    }
+
+    #[test]
+    fn matrix_mul() {
+        let pi_quarters = 0.78539816f32;
+        let matrix_rot_2d = Matrix2x2::rotation_2d(pi_quarters);
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let expected = Matrix2x2::new_idx(-1.4142134, -1.4142135, 2.828427, 4.2426405);
+        assert_eq!(matrix_rot_2d * matrix, expected)
+    }
 }
 
 #[cfg(test)]
@@ -987,6 +1276,28 @@ mod tests_matrix3x3_inverse_functions {
         let matrix = Matrix3x3::new_idx(2f32, -1f32, 3f32, 1f32, 1f32, 1f32, 1f32, -1f32, 1f32);
 
         assert_eq!(matrix.modulus(), -2f32);
+    }
+
+    #[test]
+    fn orthogonal() {
+        let matrix = Matrix3x3::new_idx(
+            2f32 / 3f32,
+            1f32 / 3f32,
+            2f32 / 3f32,
+            -2f32 / 3f32,
+            2f32 / 3f32,
+            1f32 / 3f32,
+            1f32 / 3f32,
+            2f32 / 3f32,
+            -2f32 / 3f32,
+        );
+        assert!(matrix.is_orthogonal())
+    }
+
+    #[test]
+    fn not_orthogonal() {
+        let matrix = Matrix3x3::new_idx(1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32, 1f32);
+        assert!(!matrix.is_orthogonal())
     }
 }
 

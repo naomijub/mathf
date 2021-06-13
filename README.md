@@ -19,6 +19,9 @@
 
 ## Current TODO:
 - [ ] Vector Rotation
+    - [x] 2x2 rotation matrix by teta
+    - [x] 3x3 rotation matrix by teta on axis x, y, z
+    - [ ] Arbitrary axis rotation
 - [ ] Quaternions
 - [ ] Linear Systems
 - [ ] Examples
