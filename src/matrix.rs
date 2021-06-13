@@ -250,7 +250,7 @@ impl Matrix3x3 {
         Matrix3x3::new_idx(a, 0f32, 0f32, 0f32, b, 0f32, 0f32, 0f32, c)
     }
 
-    /// 2D rotation Matrix by angle teta over RotationAxis { X, Y, Z }
+    /// 2D rotation Matrix by angle teta (radians) over RotationAxis { X, Y, Z }
     /// Matrix (Z) 3x3:
     ///       | cosθ −sinθ 0 |
     /// Rz(θ)=| sinθ  cosθ 0 |
