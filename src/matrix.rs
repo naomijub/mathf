@@ -1287,12 +1287,26 @@ mod tests_matrix_generation {
     }
 
     #[test]
+    #[should_panic]
+    fn panic_indexing_m3x3() {
+        let matrix = Matrix3x3::IDENTITY();
+        let _ = matrix[4].clone();
+    }
+
+    #[test]
     fn indexing_m2x2() {
         let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
         let expected_vector = Vector2::new(3f32, 4f32);
         let expected_value = 4f32;
         assert_eq!(expected_vector, matrix[1]);
         assert_eq!(expected_value, matrix[1][1]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn panic_indexing_m2x2() {
+        let matrix = Matrix2x2::IDENTITY();
+        let _ = matrix[8].clone();
     }
 }
 
