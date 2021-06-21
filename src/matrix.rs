@@ -1280,9 +1280,13 @@ mod tests_matrix_generation {
     #[test]
     fn indexing_m3x3() {
         let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
-        let expected_vector = Vector3::new(4f32, 5f32, 6f32);
+        let expected_vector1 = Vector3::new(1f32, 2f32, 3f32);
+        let expected_vector2 = Vector3::new(4f32, 5f32, 6f32);
+        let expected_vector3 = Vector3::new(7f32, 8f32, 5f32);
         let expected_value = 5f32;
-        assert_eq!(expected_vector, matrix[1]);
+        assert_eq!(expected_vector1, matrix[0]);
+        assert_eq!(expected_vector2, matrix[1]);
+        assert_eq!(expected_vector3, matrix[2]);
         assert_eq!(expected_value, matrix[1][1]);
     }
 
@@ -1296,9 +1300,11 @@ mod tests_matrix_generation {
     #[test]
     fn indexing_m2x2() {
         let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
-        let expected_vector = Vector2::new(3f32, 4f32);
+        let expected_vector1 = Vector2::new(1f32, 2f32);
+        let expected_vector2 = Vector2::new(3f32, 4f32);
         let expected_value = 4f32;
-        assert_eq!(expected_vector, matrix[1]);
+        assert_eq!(expected_vector1, matrix[0]);
+        assert_eq!(expected_vector2, matrix[1]);
         assert_eq!(expected_value, matrix[1][1]);
     }
 
