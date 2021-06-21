@@ -818,6 +818,32 @@ impl ops::Mul<&Point2> for &Matrix2x2 {
     }
 }
 
+// Indexing
+use std::ops::Index;
+
+impl Index<usize> for Matrix2x2 {
+    type Output = Vector2;
+    fn index(&self, s: usize) -> &Vector2 {
+        match s {
+            0 => &self.r1,
+            1 => &self.r2,
+            _ => panic!("Index out of bonds"),
+        }
+    }
+}
+
+impl Index<usize> for Matrix3x3 {
+    type Output = Vector3;
+    fn index(&self, s: usize) -> &Vector3 {
+        match s {
+            0 => &self.r1,
+            1 => &self.r2,
+            2 => &self.r3,
+            _ => panic!("Index out of bonds"),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests_matrix3x3 {
     use super::*;
@@ -1249,6 +1275,24 @@ mod tests_matrix_generation {
             vec![7f32, 8f32, 5f32],
         ];
         assert_eq!(expected, matrix.vectorize());
+    }
+
+    #[test]
+    fn indexing_m3x3() {
+        let matrix = Matrix3x3::new_idx(1f32, 2f32, 3f32, 4f32, 5f32, 6f32, 7f32, 8f32, 5f32);
+        let expected_vector = Vector3::new(4f32, 5f32, 6f32);
+        let expected_value = 5f32;
+        assert_eq!(expected_vector, matrix[1]);
+        assert_eq!(expected_value, matrix[1][1]);
+    }
+
+    #[test]
+    fn indexing_m2x2() {
+        let matrix = Matrix2x2::new_idx(1f32, 2f32, 3f32, 4f32);
+        let expected_vector = Vector2::new(3f32, 4f32);
+        let expected_value = 4f32;
+        assert_eq!(expected_vector, matrix[1]);
+        assert_eq!(expected_value, matrix[1][1]);
     }
 }
 
