@@ -7,6 +7,8 @@ pub enum Error {
     /// Can't inverse a 3x3 Singular Matrix.
     /// *A square matrix is singular if and only if its determinant is zero.*
     SingularMatrixNotInversible,
+    /// Can't inverse a Quaternion with magnitude zero
+    QuaternionNotInversible,
 }
 
 impl std::fmt::Display for Error {
@@ -18,6 +20,12 @@ impl std::fmt::Display for Error {
             Error::SingularMatrixNotInversible => {
                 write!(f, "Matrix3x3 cannont be inverse because it is singular")
             }
+            Error::QuaternionNotInversible => {
+                write!(
+                    f,
+                    "Quaternion cannont be inverse because its magnitude is ZERO"
+                )
+            }
         }
     }
 }
@@ -28,6 +36,9 @@ impl std::error::Error for Error {
             Error::NonZeroDeterminantMatrix => "Matrix determinant should be different from ZERO",
             Error::SingularMatrixNotInversible => {
                 "Matrix3x3 cannont be inverse because it is singular"
+            }
+            Error::QuaternionNotInversible => {
+                "Quaternion cannont be inverse because its magnitude is ZERO"
             }
         }
     }
