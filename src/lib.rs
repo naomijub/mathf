@@ -1,6 +1,7 @@
 pub mod error;
 pub mod math_helper;
 pub mod matrix;
+pub mod quaternion;
 pub(crate) mod vector2;
 pub(crate) mod vector3;
 
