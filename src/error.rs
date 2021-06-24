@@ -47,3 +47,24 @@ impl std::error::Error for Error {
         Some(self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn errors() {
+        assert_eq!(
+            Error::QuaternionNotInversible.to_string(),
+            "Quaternion cannont be inverse because its magnitude is ZERO"
+        );
+        assert_eq!(
+            Error::SingularMatrixNotInversible.to_string(),
+            "Matrix3x3 cannont be inverse because it is singular"
+        );
+        assert_eq!(
+            Error::NonZeroDeterminantMatrix.to_string(),
+            "Matrix determinant should be different from ZERO"
+        );
+    }
+}
