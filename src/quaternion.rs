@@ -121,7 +121,7 @@ impl Quaternion {
         }
     }
 
-    /// Cross product between two Quaternions.
+    /// Hamilton product between two Quaternions.
     /// ```
     /// // | a |   | m |
     /// // | d | x | n |
@@ -225,9 +225,9 @@ impl Quaternion {
     pub fn inverse(&self) -> Result<Quaternion, Error> {
         let magnitude_squared = self.squared();
         if float_eq(magnitude_squared, 0., 0.0001) {
-            Ok(self.conjugate() / magnitude_squared)
-        } else {
             Err(Error::QuaternionNotInversible)
+        } else {
+            Ok(self.conjugate() / magnitude_squared)
         }
     }
 }
@@ -330,7 +330,7 @@ impl ops::Mul<&Quaternion> for &Quaternion {
 
     /// Implements the dot product of 2 &Quaternion as '*'.
     fn mul(self, new_quat: &Quaternion) -> f32 {
-        self.w * new_quat.w * self.i * new_quat.i * self.j * new_quat.j * self.k * new_quat.k
+        self.w * new_quat.w + self.i * new_quat.i + self.j * new_quat.j + self.k * new_quat.k
     }
 }
 
@@ -458,6 +458,24 @@ mod tests {
     }
 
     #[test]
+    fn left_back() {
+        let actual = &Quaternion::LEFT(1f32) - &Quaternion::BACK(1f32);
+        assert_eq!(actual.i, -1f32);
+        assert_eq!(actual.j, 0f32);
+        assert_eq!(actual.k, 1f32);
+        assert_eq!(actual.w, 0f32);
+    }
+
+    #[test]
+    fn forward_down() {
+        let actual = &Quaternion::FOWARD(1f32) - &Quaternion::DOWN(1f32);
+        assert_eq!(actual.i, 0f32);
+        assert_eq!(actual.j, 1f32);
+        assert_eq!(actual.k, 1f32);
+        assert_eq!(actual.w, 0f32);
+    }
+
+    #[test]
     fn magnitude_of_quaternion() {
         let quat = Quaternion {
             i: 1f32,
@@ -499,10 +517,37 @@ mod tests {
     }
 
     #[test]
+    fn dot_product_by_ref() {
+        let quat1 = Quaternion {
+            i: 2f32,
+            j: 1f32,
+            k: 2f32,
+            w: 1f32,
+        };
+        let quat2 = Quaternion {
+            i: 1f32,
+            j: 2f32,
+            k: 3f32,
+            w: 1f32,
+        };
+        let actual = &quat1 * &quat2;
+        let expected = 11f32;
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
     fn cross_product_between_2_quaternions() {
         let quat1 = Quaternion::new(1f32, 2f32, 3f32, 1f32);
         let actual = quat1.x(Quaternion::new(2f32, 3f32, 4f32, 1f32));
         let expected = Quaternion::new(-19f32, 17f32, 9f32, -19f32);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn cross_product_between_2_diff_quaternions() {
+        let quat1 = Quaternion::new(1f32, 2f32, 3f32, 0f32);
+        let actual = quat1.x(Quaternion::new(2f32, 3f32, 4f32, 1f32));
+        let expected = Quaternion::new(-20f32, 16f32, 8f32, -20f32);
         assert_eq!(actual, expected);
     }
 
@@ -551,5 +596,54 @@ mod tests {
 
         assert_eq!(&v / 2.0, Quaternion::new(0.5f32, 0.5f32, 0.5f32, 0.5));
         assert_eq!(&v * 2.0, Quaternion::new(2f32, 2f32, 2f32, 2f32));
+    }
+
+    #[test]
+    fn arithmetic_quat_zero() {
+        let v = Quaternion::ZERO();
+
+        assert_eq!(&v / 2.0, Quaternion::ZERO());
+    }
+
+    #[test]
+    fn conjugate() {
+        let quaternion = Quaternion::new(1f32, 2f32, 3f32, 4f32);
+
+        assert_eq!(
+            quaternion.conjugate(),
+            Quaternion::new(-1f32, -2f32, -3f32, 4f32)
+        );
+    }
+
+    #[test]
+    fn scalar_vec_format() {
+        let quaternion = Quaternion::new(1f32, 2f32, 3f32, 4f32);
+        let expected = (4f32, Vector3::new(1f32, 2f32, 3f32));
+
+        assert_eq!(quaternion.scalar_vector_format(), expected);
+    }
+
+    #[test]
+    fn scalar_vec_conj_format() {
+        let quaternion = Quaternion::new(1f32, 2f32, 3f32, 4f32);
+        let expected = (4f32, Vector3::new(-1f32, -2f32, -3f32));
+
+        assert_eq!(quaternion.scalar_vector_conjugate_format(), expected);
+    }
+
+    #[test]
+    fn inverse() {
+        let quaternion = Quaternion::new(4f32, 2f32, 5f32, 4f32);
+        let expected = Quaternion::new(-0.06557377, -0.032786883, -0.08196721, 0.06557377);
+
+        assert_eq!(quaternion.inverse().unwrap(), expected);
+    }
+
+    #[test]
+    fn inverse_err() {
+        let quaternion = Quaternion::ZERO();
+        let expected = Error::QuaternionNotInversible;
+
+        assert_eq!(quaternion.inverse().err(), Some(expected));
     }
 }
